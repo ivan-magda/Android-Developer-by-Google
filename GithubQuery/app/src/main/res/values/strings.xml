@@ -15,4 +15,10 @@
   -->
 <resources>
     <string name="app_name">Github Query</string>
+
+    <string name="search_hint">Type a query for GitHub</string>
+    <string name="tv_url_display_hint">Enter a search query and your URL will show up here!</string>
+
+    <string name="search_menu">Search</string>
+    <string name="error_message">Failed to get results, please try again.</string>
 </resources>

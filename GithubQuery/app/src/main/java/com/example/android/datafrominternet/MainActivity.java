@@ -15,24 +15,83 @@
  */
 package com.example.android.datafrominternet;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.example.android.datafrominternet.utilities.NetworkUtils;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO (26) Create an EditText variable called mSearchBoxEditText
-
-    // TODO (27) Create a TextView variable called mUrlDisplayTextView
-    // TODO (28) Create a TextView variable called mSearchResults TextView
+    private EditText mSearchBoxEditText;
+    private TextView mUrlDisplayTextView;
+    private TextView mSearchResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        configure();
+    }
 
-        // TODO (29) Use findViewById to get a reference to mSearchBoxEditText
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
-        // TODO (30) Use findViewById to get a reference to mUrlDisplayTextView
-        // TODO (31) Use findViewById to get a reference to mSearchResultsTextView
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuItem = item.getItemId();
+        if (menuItem == R.id.action_search) {
+            makeGithubSearchQuery();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void configure() {
+        mSearchBoxEditText = (EditText) findViewById(R.id.et_search_box);
+        mUrlDisplayTextView = (TextView) findViewById(R.id.tv_url_display);
+        mSearchResults = (TextView) findViewById(R.id.tv_github_search_results_json);
+    }
+
+    private void makeGithubSearchQuery() {
+        String githubQuery = mSearchBoxEditText.getText().toString();
+        URL githubSearchUrl = NetworkUtils.buildUrl(githubQuery);
+        if (githubSearchUrl != null) {
+            mUrlDisplayTextView.setText(githubSearchUrl.toString());
+            new GithubQueryTask().execute(githubSearchUrl);
+        }
+    }
+
+    private class GithubQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String githubSearchResults = null;
+            try {
+                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return githubSearchResults;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (!TextUtils.isEmpty(s)) {
+                mSearchResults.setText(s);
+            }
+        }
     }
 }
