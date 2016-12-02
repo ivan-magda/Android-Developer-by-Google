@@ -18,6 +18,8 @@ package com.example.android.sunshine;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +34,8 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    /* TextView variable for the weather results presenting. */
-    private TextView mWeatherTextView;
+    private RecyclerView mRecyclerView;
+    private ForecastAdapter mForecastAdapter = new ForecastAdapter();
 
     /* TextView variable for the error message display. */
     private TextView mErrorMessageTextView;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItem = item.getItemId();
         if (menuItem == R.id.action_refresh) {
-            mWeatherTextView.setText(null);
+            mForecastAdapter.updateWithNewData(null);
             loadWeatherData();
             return true;
         }
@@ -77,9 +79,25 @@ public class MainActivity extends AppCompatActivity {
          * Using findViewById, we get a reference to our TextView from xml. This allows us to
          * do things like set the text of the TextView.
          */
-        mWeatherTextView = (TextView) findViewById(R.id.tv_weather_data);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
         mErrorMessageTextView = (TextView) findViewById(R.id.tv_error_message_display);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
+        /*
+         * LinearLayoutManager can support HORIZONTAL or VERTICAL orientations. The reverse layout
+         * parameter is useful mostly for HORIZONTAL layouts that should reverse for right to left
+         * languages.
+         */
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        /*
+         * Use this setting to improve performance if you know that changes in content do not
+         * change the child layout size in the RecyclerView
+         */
+        mRecyclerView.setHasFixedSize(true);
+
+        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        mRecyclerView.setAdapter(mForecastAdapter);
     }
 
     private void loadWeatherData() {
@@ -95,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
      * need to check whether each view is currently visible or invisible.
      */
     private void showWeatherData() {
-        mWeatherTextView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
         mErrorMessageTextView.setVisibility(View.INVISIBLE);
     }
 
@@ -107,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
      * need to check whether each view is currently visible or invisible.
      */
     private void showErrorMessage() {
-        mWeatherTextView.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageTextView.setVisibility(View.VISIBLE);
     }
 
@@ -147,10 +165,8 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String[] weatherData) {
             setLoadingIndicatorVisibility(View.INVISIBLE);
             if (weatherData != null) {
-                for (String weatherString : weatherData) {
-                    showWeatherData();
-                    mWeatherTextView.append(weatherString + "\n\n\n");
-                }
+                showWeatherData();
+                mForecastAdapter.updateWithNewData(weatherData);
             } else {
                 showErrorMessage();
             }

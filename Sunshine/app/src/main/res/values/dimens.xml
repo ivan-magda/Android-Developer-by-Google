@@ -4,4 +4,7 @@
     <dimen name="tv_text_size">20sp</dimen>
     <dimen name="tv_error_text_size">16sp</dimen>
     <dimen name="pb_size">42dp</dimen>
+    <dimen name="tv_weather_data_text_size">22sp</dimen>
+    <dimen name="tv_list_item_padding">16dp</dimen>
+    <dimen name="separator_margin">8dp</dimen>
 </resources>
