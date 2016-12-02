@@ -140,4 +140,9 @@
     <!--Used by SunshinePreferences-->
     <!-- - - - - - - - - - - - - - -->
     <!--NONE-->
+
+    <!-- - - - - - - - - - - - - - -->
+    <!--Used in menu-->
+    <!-- - - - - - - - - - - - - - -->
+    <string name="action_refresh">Refresh</string>
 </resources>
