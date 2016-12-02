@@ -24,6 +24,7 @@
     <!--or something similar.-->
     <string name="app_name">Sunshine</string>
 
+    <string name="error_message">Failed to get results, please try again.</string>
 
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->

@@ -30,4 +30,19 @@
             android:textSize="@dimen/tv_text_size"
             src:text="Hello World!" />
     </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_error_message_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/tv_padding"
+        android:textSize="@dimen/tv_error_text_size"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        android:layout_width="@dimen/pb_size"
+        android:layout_height="@dimen/pb_size"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
 </FrameLayout>

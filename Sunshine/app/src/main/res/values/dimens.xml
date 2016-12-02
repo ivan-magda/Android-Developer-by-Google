@@ -2,4 +2,6 @@
 <resources>
     <dimen name="tv_padding">16dp</dimen>
     <dimen name="tv_text_size">20sp</dimen>
+    <dimen name="tv_error_text_size">16sp</dimen>
+    <dimen name="pb_size">42dp</dimen>
 </resources>

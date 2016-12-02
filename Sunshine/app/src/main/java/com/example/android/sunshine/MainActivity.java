@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePreferences;
@@ -30,7 +32,20 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    /* TextView variable for the weather results presenting. */
     private TextView mWeatherTextView;
+
+    /* TextView variable for the error message display. */
+    private TextView mErrorMessageTextView;
+
+    /*
+     * The ProgressBar that will indicate to the user that we are loading data. It will be
+     * hidden when no data is loading.
+     * <p>
+     * Please note: This so called "ProgressBar" isn't a bar by default. It is more of a
+     * circle. We didn't make the rules (or the names of Views), we just follow them.
+     */
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
          * do things like set the text of the TextView.
          */
         mWeatherTextView = (TextView) findViewById(R.id.tv_weather_data);
+        mErrorMessageTextView = (TextView) findViewById(R.id.tv_error_message_display);
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
     }
 
     private void loadWeatherData() {
@@ -70,7 +87,41 @@ public class MainActivity extends AppCompatActivity {
         new FetchWeatherTask().execute(location);
     }
 
+    /**
+     * This method will make the View for the weather data visible and
+     * hide the error message.
+     * <p>
+     * Since it is okay to redundantly set the visibility of a View, we don't
+     * need to check whether each view is currently visible or invisible.
+     */
+    private void showWeatherData() {
+        mWeatherTextView.setVisibility(View.VISIBLE);
+        mErrorMessageTextView.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * This method will make the error message visible and hide the weather
+     * View.
+     * <p>
+     * Since it is okay to redundantly set the visibility of a View, we don't
+     * need to check whether each view is currently visible or invisible.
+     */
+    private void showErrorMessage() {
+        mWeatherTextView.setVisibility(View.INVISIBLE);
+        mErrorMessageTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void setLoadingIndicatorVisibility(int visibility) {
+        mProgressBar.setVisibility(visibility);
+    }
+
     private class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setLoadingIndicatorVisibility(View.VISIBLE);
+        }
 
         @Override
         protected String[] doInBackground(String... params) {
@@ -94,10 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String[] weatherData) {
+            setLoadingIndicatorVisibility(View.INVISIBLE);
             if (weatherData != null) {
                 for (String weatherString : weatherData) {
+                    showWeatherData();
                     mWeatherTextView.append(weatherString + "\n\n\n");
                 }
+            } else {
+                showErrorMessage();
             }
         }
     }
