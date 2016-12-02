@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine;
+package com.example.android.sunshine.activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.android.sunshine.R;
+import com.example.android.sunshine.data.ForecastAdapter;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.utilities.NetworkUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
@@ -52,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
      */
     private ProgressBar mProgressBar;
 
-    private Toast mToast;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +71,17 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int menuItem = item.getItemId();
-        if (menuItem == R.id.action_refresh) {
-            mForecastAdapter.updateWithNewData(null);
-            loadWeatherData();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                mForecastAdapter.updateWithNewData(null);
+                loadWeatherData();
+                return true;
+            case R.id.action_share_thoughts:
+                shareThoughts();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void configure() {
@@ -108,11 +113,19 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
 
     @Override
     public void onClick(int selectedIndex, String selectedWeather) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        mToast = Toast.makeText(this, selectedWeather, Toast.LENGTH_SHORT);
-        mToast.show();
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, selectedWeather);
+        startActivity(intent);
+    }
+
+    private void shareThoughts() {
+        String type = "text/plain";
+        String title = "Share your Thoughts";
+        ShareCompat.IntentBuilder.from(this)
+                .setType(type)
+                .setText("I love this class!")
+                .setChooserTitle(title)
+                .startChooser();
     }
 
     private void loadWeatherData() {

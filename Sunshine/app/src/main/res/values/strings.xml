@@ -146,4 +146,6 @@
     <!--Used in menu-->
     <!-- - - - - - - - - - - - - - -->
     <string name="action_refresh">Refresh</string>
+    <string name="action_share_weather">Share Weather Details</string>
+    <string name="action_share_thoughts">Share Thoughts</string>
 </resources>
