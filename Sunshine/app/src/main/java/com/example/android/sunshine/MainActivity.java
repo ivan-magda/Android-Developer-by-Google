@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.utilities.NetworkUtils;
@@ -32,7 +33,9 @@ import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickListener {
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter = new ForecastAdapter();
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
      * circle. We didn't make the rules (or the names of Views), we just follow them.
      */
     private ProgressBar mProgressBar;
+
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);
+        mForecastAdapter.setListItemClickListener(this);
+    }
+
+    @Override
+    public void onClick(int selectedIndex, String selectedWeather) {
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(this, selectedWeather, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
     private void loadWeatherData() {

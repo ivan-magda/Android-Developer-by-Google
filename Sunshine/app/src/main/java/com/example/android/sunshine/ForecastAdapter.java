@@ -8,25 +8,56 @@ import android.widget.TextView;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
-    private String[] mWeatherData;
-
-    public ForecastAdapter() {
-        this.mWeatherData = null;
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface ForecastAdapterOnClickListener {
+        public void onClick(int selectedIndex, String selectedWeather);
     }
 
-    public ForecastAdapter(String[] weatherData) {
+    private String[] mWeatherData;
+    private ForecastAdapterOnClickListener mClickListener;
+
+    /**
+     * Creates a ForecastAdapter.
+     */
+    public ForecastAdapter() {
+        this.mWeatherData = null;
+        this.mClickListener = null;
+    }
+
+    /**
+     * Creates a ForecastAdapter.
+     *
+     * @param clickListener The on-click handler for this adapter. This single handler is called
+     *                      when an item is clicked.
+     * @param weatherData   The data source.
+     */
+    public ForecastAdapter(String[] weatherData, ForecastAdapterOnClickListener clickListener) {
         this.mWeatherData = weatherData;
+        this.mClickListener = clickListener;
+    }
+
+    public void setListItemClickListener(ForecastAdapterOnClickListener forecastAdapterOnClickListener) {
+        this.mClickListener = forecastAdapterOnClickListener;
     }
 
     /**
      * Cache of the children views for a forecast list item.
      */
-    class ForecastAdapterViewHolder extends RecyclerView.ViewHolder {
+    class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView mWeatherTextView;
 
         ForecastAdapterViewHolder(View itemView) {
             super(itemView);
             mWeatherTextView = (TextView) itemView.findViewById(R.id.tv_weather_data);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            if (mClickListener != null) mClickListener.onClick(position, mWeatherData[position]);
         }
     }
 
