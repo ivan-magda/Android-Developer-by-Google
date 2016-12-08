@@ -33,6 +33,12 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    /* A constant to save and restore the URL that is being displayed */
+    private static final String SEARCH_QUERY_URL_EXTRA = "query";
+
+    /* A constant to save and restore the JSON that is being displayed */
+    private static final String SEARCH_RESULTS_RAW_JSON = "results";
+
     private EditText mSearchBoxEditText;
     private TextView mUrlDisplayTextView;
     private TextView mSearchResultsTextView;
@@ -44,7 +50,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        configure();
+
+        bindViews();
+
+        // If the savedInstanceState bundle is not null,
+        // set the text of the URL and search results TextView respectively.
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SEARCH_QUERY_URL_EXTRA)) {
+                String query = savedInstanceState.getString(SEARCH_QUERY_URL_EXTRA);
+                mUrlDisplayTextView.setText(query);
+            }
+
+            if (savedInstanceState.containsKey(SEARCH_RESULTS_RAW_JSON)) {
+                String results = savedInstanceState.getString(SEARCH_RESULTS_RAW_JSON);
+                mSearchResultsTextView.setText(results);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        /* Persist data across Activity recreation */
+        outState.putString(SEARCH_QUERY_URL_EXTRA, mUrlDisplayTextView.getText().toString());
+        outState.putString(SEARCH_RESULTS_RAW_JSON, mSearchResultsTextView.getText().toString());
     }
 
     @Override
@@ -63,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void configure() {
+    private void bindViews() {
         mSearchBoxEditText = (EditText) findViewById(R.id.et_search_box);
         mUrlDisplayTextView = (TextView) findViewById(R.id.tv_url_display);
         mSearchResultsTextView = (TextView) findViewById(R.id.tv_github_search_results_json);
