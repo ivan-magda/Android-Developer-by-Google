@@ -53,14 +53,12 @@ public class NetworkUtils {
                 .appendQueryParameter(PARAM_SORT, sortBy)
                 .build();
 
-        URL url = null;
         try {
-            url = new URL(uri.toString());
+            return new URL(uri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return url;
     }
 
     /**
