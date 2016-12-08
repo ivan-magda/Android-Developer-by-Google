@@ -99,12 +99,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<String> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
 
+            /* This String will contain the raw JSON from the results of our Github search */
+            private String mGithubJson;
+
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
+
                 if (args == null) return;
                 mProgressBar.setVisibility(View.VISIBLE);
-                forceLoad();
+
+                 /*
+                 * If we already have cached results, just deliver them now. If we don't have any
+                 * cached results, force a load.
+                 */
+                if (!TextUtils.isEmpty(mGithubJson)) {
+                    deliverResult(mGithubJson);
+                } else {
+                    forceLoad();
+                }
             }
 
             @Override
@@ -119,6 +132,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     e.printStackTrace();
                     return null;
                 }
+            }
+
+            @Override
+            public void deliverResult(String result) {
+                mGithubJson = result;
+                super.deliverResult(result);
             }
         };
     }
