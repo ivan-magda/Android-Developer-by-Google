@@ -70,15 +70,21 @@ public class VisualizerActivity extends AppCompatActivity
                 getResources().getBoolean(R.bool.pref_show_treble_default));
         mVisualizerView.setShowTreble(showTreble);
 
-        mVisualizerView.setMinSizeScale(1);
+        loadSizeFromSharedPreferences(sharedPreferences);
         loadColorFromPreferences(sharedPreferences);
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
-    public void loadColorFromPreferences(SharedPreferences sharedPreferences) {
+    private void loadColorFromPreferences(SharedPreferences sharedPreferences) {
         mVisualizerView.setColor(sharedPreferences.getString(getString(R.string.pref_color_key),
                 getString(R.string.pref_color_red_value)));
+    }
+
+    private void loadSizeFromSharedPreferences(SharedPreferences sharedPreferences) {
+        float minSize = Float.parseFloat(sharedPreferences.getString(getString(R.string.pref_size_key),
+                getString(R.string.pref_size_default)));
+        mVisualizerView.setMinSizeScale(minSize);
     }
 
     private void defaultSetup() {
@@ -191,6 +197,8 @@ public class VisualizerActivity extends AppCompatActivity
                     getResources().getBoolean(R.bool.pref_show_treble_default)));
         } else if (key.equals(getString(R.string.pref_color_key))) {
             loadColorFromPreferences(sharedPreferences);
+        } else if (key.equals(getString(R.string.pref_size_key))) {
+            loadSizeFromSharedPreferences(sharedPreferences);
         }
     }
 }
