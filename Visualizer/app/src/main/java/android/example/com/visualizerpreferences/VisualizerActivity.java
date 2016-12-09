@@ -18,6 +18,7 @@ package android.example.com.visualizerpreferences;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.example.com.visualizerpreferences.AudioVisuals.AudioInputReader;
 import android.example.com.visualizerpreferences.AudioVisuals.VisualizerView;
@@ -26,11 +27,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class VisualizerActivity extends AppCompatActivity {
+public class VisualizerActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int MY_PERMISSION_RECORD_AUDIO_REQUEST_CODE = 88;
     private VisualizerView mVisualizerView;
@@ -41,8 +44,41 @@ public class VisualizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visualizer);
         mVisualizerView = (VisualizerView) findViewById(R.id.activity_visualizer);
-        defaultSetup();
+        setupSharedPreferences();
         setupPermissions();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        boolean showBass = sharedPreferences.getBoolean(getString(R.string.pref_show_bass_key),
+                getResources().getBoolean(R.bool.pref_show_bass_default));
+        mVisualizerView.setShowBass(showBass);
+
+        boolean showMid = sharedPreferences.getBoolean(getString(R.string.pref_show_mid_key),
+                getResources().getBoolean(R.bool.pref_show_mid_default));
+        mVisualizerView.setShowMid(showMid);
+
+        boolean showTreble = sharedPreferences.getBoolean(getString(R.string.pref_show_treble_key),
+                getResources().getBoolean(R.bool.pref_show_treble_default));
+        mVisualizerView.setShowTreble(showTreble);
+
+        mVisualizerView.setMinSizeScale(1);
+        loadColorFromPreferences(sharedPreferences);
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public void loadColorFromPreferences(SharedPreferences sharedPreferences) {
+        mVisualizerView.setColor(sharedPreferences.getString(getString(R.string.pref_color_key),
+                getString(R.string.pref_color_red_value)));
     }
 
     private void defaultSetup() {
@@ -135,6 +171,26 @@ public class VisualizerActivity extends AppCompatActivity {
                     // and then close the app.
                 }
             }
+        }
+    }
+
+    /**
+     * Updates the screen if the shared preferences change. This method is required when you make a
+     * class implement OnSharedPreferenceChangedListener
+     **/
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_show_bass_key))) {
+            mVisualizerView.setShowBass(sharedPreferences.getBoolean(key,
+                    getResources().getBoolean(R.bool.pref_show_bass_default)));
+        } else if (key.equals(getString(R.string.pref_show_mid_key))) {
+            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key,
+                    getResources().getBoolean(R.bool.pref_show_mid_default)));
+        } else if (key.equals(getString(R.string.pref_show_treble_key))) {
+            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key,
+                    getResources().getBoolean(R.bool.pref_show_treble_default)));
+        } else if (key.equals(getString(R.string.pref_color_key))) {
+            loadColorFromPreferences(sharedPreferences);
         }
     }
 }
