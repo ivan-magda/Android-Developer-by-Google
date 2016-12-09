@@ -90,11 +90,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                mForecastAdapter.updateWithNewData(null);
                 loadWeatherData();
                 return true;
             case R.id.action_share_thoughts:
                 shareThoughts();
+                return true;
+            case R.id.action_map:
+                openLocationInMap();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
