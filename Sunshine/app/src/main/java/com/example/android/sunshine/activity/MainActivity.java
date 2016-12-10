@@ -41,6 +41,7 @@ import com.example.android.sunshine.utilities.NetworkUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 
 import java.net.URL;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String[]>,
         ForecastAdapter.ForecastAdapterOnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -245,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setLoadingIndicatorVisibility(View.INVISIBLE);
         if (weatherData != null && weatherData.length > 0) {
             showWeatherData();
-            mForecastAdapter.updateWithNewData(weatherData);
+            mForecastAdapter.updateWithNewData(Arrays.asList(weatherData));
         } else {
             showErrorMessage();
         }

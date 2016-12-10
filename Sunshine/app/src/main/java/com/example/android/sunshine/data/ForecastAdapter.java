@@ -1,5 +1,6 @@
 package com.example.android.sunshine.data;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,23 +9,26 @@ import android.widget.TextView;
 
 import com.example.android.sunshine.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
     /**
      * The interface that receives onClick messages.
      */
     public interface ForecastAdapterOnClickListener {
-        public void onClick(int selectedIndex, String selectedWeather);
+        void onClick(int selectedIndex, String selectedWeather);
     }
 
-    private String[] mWeatherData;
+    private List<String> mWeatherData;
     private ForecastAdapterOnClickListener mClickListener;
 
     /**
      * Creates a ForecastAdapter.
      */
     public ForecastAdapter() {
-        this.mWeatherData = null;
+        this.mWeatherData = new ArrayList<>();
         this.mClickListener = null;
     }
 
@@ -35,7 +39,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      *                      when an item is clicked.
      * @param weatherData   The data source.
      */
-    public ForecastAdapter(String[] weatherData, ForecastAdapterOnClickListener clickListener) {
+    public ForecastAdapter(List<String> weatherData, ForecastAdapterOnClickListener clickListener) {
         this.mWeatherData = weatherData;
         this.mClickListener = clickListener;
     }
@@ -45,22 +49,37 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     /**
-     * Cache of the children views for a forecast list item.
+     * This method is used to set the weather forecast on a ForecastAdapter if we've already
+     * created one. This is handy when we get new data from the web but don't want to create a
+     * new ForecastAdapter to display it.
+     *
+     * @param newWeatherData The new weather data to be displayed.
      */
-    class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView mWeatherTextView;
+    public void updateWithNewData(final List<String> newWeatherData) {
+        final List<String> oldData = new ArrayList<>(this.mWeatherData);
+        this.mWeatherData.clear();
+        if (newWeatherData != null) this.mWeatherData.addAll(newWeatherData);
+        DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return oldData.size();
+            }
 
-        ForecastAdapterViewHolder(View itemView) {
-            super(itemView);
-            mWeatherTextView = (TextView) itemView.findViewById(R.id.tv_weather_data);
-            itemView.setOnClickListener(this);
-        }
+            @Override
+            public int getNewListSize() {
+                return mWeatherData.size();
+            }
 
-        @Override
-        public void onClick(View view) {
-            int position = getAdapterPosition();
-            if (mClickListener != null) mClickListener.onClick(position, mWeatherData[position]);
-        }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return oldData.get(oldItemPosition).equals(mWeatherData.get(newItemPosition));
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return oldData.get(oldItemPosition).equals(mWeatherData.get(newItemPosition));
+            }
+        }).dispatchUpdatesTo(this);
     }
 
     /**
@@ -93,8 +112,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        String weatherData = mWeatherData[position];
-        forecastAdapterViewHolder.mWeatherTextView.setText(weatherData);
+        forecastAdapterViewHolder.setWeatherData(mWeatherData.get(position));
     }
 
     /**
@@ -105,18 +123,31 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public int getItemCount() {
-        return (mWeatherData == null ? 0 : mWeatherData.length);
+        return (mWeatherData == null ? 0 : mWeatherData.size());
     }
 
     /**
-     * This method is used to set the weather forecast on a ForecastAdapter if we've already
-     * created one. This is handy when we get new data from the web but don't want to create a
-     * new ForecastAdapter to display it.
-     *
-     * @param newWeatherData The new weather data to be displayed.
+     * Cache of the children views for a forecast list item.
      */
-    public void updateWithNewData(String[] newWeatherData) {
-        mWeatherData = newWeatherData;
-        notifyDataSetChanged();
+    class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView mWeatherTextView;
+        String mWeatherData;
+
+        ForecastAdapterViewHolder(View itemView) {
+            super(itemView);
+            mWeatherTextView = (TextView) itemView.findViewById(R.id.tv_weather_data);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            if (mClickListener != null) mClickListener.onClick(position, mWeatherData);
+        }
+
+        void setWeatherData(String weatherData) {
+            this.mWeatherData = weatherData;
+            mWeatherTextView.setText(weatherData);
+        }
     }
 }
