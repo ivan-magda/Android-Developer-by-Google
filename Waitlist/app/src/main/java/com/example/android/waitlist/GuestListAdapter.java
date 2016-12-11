@@ -44,6 +44,19 @@ public class GuestListAdapter extends RecyclerView.Adapter<GuestListAdapter.Gues
     }
 
     /**
+     * Swaps the Cursor currently held in the adapter with a new one
+     * and triggers a UI refresh
+     *
+     * @param newCursor the new cursor that will replace the existing one
+     */
+    public void swapCursor(Cursor newCursor) {
+        // Always close the previous mCursor first
+        if (mCursor != null) mCursor.close();
+        mCursor = newCursor;
+        if (newCursor != null) this.notifyDataSetChanged();
+    }
+
+    /**
      * Inner class to hold the views needed to display a single item in the recycler-view
      */
     class GuestViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +94,16 @@ public class GuestListAdapter extends RecyclerView.Adapter<GuestListAdapter.Gues
                 int partySize = mCursor.getInt(partySizeIndex);
                 partySizeTextView.setText(String.valueOf(partySize));
             }
+
+            int idIndex = mCursor.getColumnIndex(WaitlistContract.WaitlistEntry._ID);
+            if (idIndex != COLUMN_NOT_EXIST) {
+                long id = mCursor.getLong(idIndex);
+                itemView.setTag(id);
+            }
+        }
+
+        public long getGuestId() {
+            return (long) itemView.getTag();
         }
 
     }

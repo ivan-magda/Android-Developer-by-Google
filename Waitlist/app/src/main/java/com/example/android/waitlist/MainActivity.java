@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -51,6 +52,22 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new GuestListAdapter(this, getAllGuests());
         waitlistRecyclerView.setAdapter(mAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                GuestListAdapter.GuestViewHolder vh = (GuestListAdapter.GuestViewHolder) viewHolder;
+                long id = vh.getGuestId();
+                removeGuest(id);
+                mAdapter.swapCursor(getAllGuests());
+            }
+        }).attachToRecyclerView(waitlistRecyclerView);
     }
 
     /**
@@ -75,14 +92,20 @@ public class MainActivity extends AppCompatActivity {
         partySize = Integer.parseInt(mNewPartySizeEditText.getText().toString());
 
         addNewGuest(name, partySize);
+        mAdapter.swapCursor(getAllGuests());
     }
 
     private long addNewGuest(String name, int partySize) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(WaitlistContract.WaitlistEntry.COLUMN_GUEST_NAME, name);
         contentValues.put(WaitlistContract.WaitlistEntry.COLUMN_PARTY_SIZE, partySize);
-
         return mDatabase.insert(WaitlistContract.WaitlistEntry.TABLE_NAME, null, contentValues);
+    }
+
+    private boolean removeGuest(long id) {
+        int affected = mDatabase.delete(WaitlistContract.WaitlistEntry.TABLE_NAME,
+                WaitlistContract.WaitlistEntry._ID + "=" + id, null);
+        return affected > 0;
     }
 
 }
