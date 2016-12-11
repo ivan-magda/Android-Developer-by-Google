@@ -16,10 +16,15 @@
 
 package com.udacity.example.quizexample;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
 
 /**
  * Gets the data from the ContentProvider and shows a series of flash cards.
@@ -38,13 +43,16 @@ public class MainActivity extends AppCompatActivity {
     // advance the app to the next word
     private final int STATE_SHOWN = 1;
 
+    // The data from the DroidTermsExample content provider.
+    private Cursor mData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get the views
         mButton = (Button) findViewById(R.id.button_next);
+        new DroidTermsTask().execute();
     }
 
     /**
@@ -67,15 +75,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void nextWord() {
-        // Change button text
         mButton.setText(getString(R.string.show_definition));
         mCurrentState = STATE_HIDDEN;
     }
 
     public void showDefinition() {
-        // Change button text
         mButton.setText(getString(R.string.next_word));
         mCurrentState = STATE_SHOWN;
+    }
+
+    final class DroidTermsTask extends AsyncTask<Void, Void, Cursor> {
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+            ContentResolver contentResolver = getContentResolver();
+            return contentResolver.query(DroidTermsExampleContract.CONTENT_URI, null, null, null, null);
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+            mData = cursor;
+        }
     }
 
 }
