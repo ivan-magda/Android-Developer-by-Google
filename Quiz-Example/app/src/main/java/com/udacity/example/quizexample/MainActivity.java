@@ -21,9 +21,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
 
@@ -36,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
     // The current state of the app
     private int mCurrentState;
+    // The index of the definition and word column in the cursor
+    private int mDefCol, mWordCol;
+
+    private TextView mWordTextView, mDefinitionTextView;
     private Button mButton;
 
     // This state is when the word definition is hidden and clicking the button will therefore
@@ -55,7 +59,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mButton = (Button) findViewById(R.id.button_next);
+        mWordTextView = (TextView) findViewById(R.id.text_view_word);
+        mDefinitionTextView = (TextView) findViewById(R.id.text_view_definition);
+
         new DroidTermsTask().execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mData != null) mData.close();
     }
 
     /**
@@ -78,13 +91,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void nextWord() {
-        mButton.setText(getString(R.string.show_definition));
-        mCurrentState = STATE_HIDDEN;
+        // Go to the next word in the Cursor, show the next word and hide the definition
+        // Note that you shouldn't try to do this if the cursor hasn't been set yet.
+        // If you reach the end of the list of words, you should start at the beginning again.
+        if (mData != null) {
+            // Move to the next position in the cursor, if there isn't one, move to the first
+            if (!mData.moveToNext()) mData.moveToFirst();
+
+            mDefinitionTextView.setVisibility(View.INVISIBLE);
+            mButton.setText(getString(R.string.show_definition));
+
+            mWordTextView.setText(mData.getString(mWordCol));
+            mDefinitionTextView.setText(mData.getString(mDefCol));
+
+            mCurrentState = STATE_HIDDEN;
+        }
     }
 
     public void showDefinition() {
-        mButton.setText(getString(R.string.next_word));
-        mCurrentState = STATE_SHOWN;
+        if (mData != null) {
+            mDefinitionTextView.setVisibility(View.VISIBLE);
+            mButton.setText(getString(R.string.next_word));
+            mCurrentState = STATE_SHOWN;
+        }
     }
 
     final class DroidTermsTask extends AsyncTask<Void, Void, Cursor> {
@@ -97,20 +126,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Cursor cursor) {
             super.onPostExecute(cursor);
+
             mData = cursor;
+            mWordCol = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD);
+            mDefCol = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION);
 
-            final int NOT_FOUND = -1;
-            int wordColumn = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD);
-            int definitionColumn = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION);
-
-            if (wordColumn != NOT_FOUND && definitionColumn != NOT_FOUND) {
-                while (cursor.moveToNext()) {
-                    String word = mData.getString(wordColumn);
-                    String definition = mData.getString(definitionColumn);
-                    Log.v(LOG_TAG, word + "-" + definition);
-                }
-            }
-            mData.close();
+            nextWord();
         }
     }
 
