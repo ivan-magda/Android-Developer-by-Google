@@ -25,7 +25,7 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
      * use-case, we wanted to watch out for it and warn you what could happen if you mistakenly
      * version your databases.
      */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String REAL_TYPE = " REAL";
@@ -51,7 +51,14 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
             WeatherEntry.COLUMN_HUMIDITY + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
             WeatherEntry.COLUMN_PRESSURE + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
             WeatherEntry.COLUMN_WIND_SPEED + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
-            WeatherEntry.COLUMN_DEGREES + REAL_TYPE + NOT_NULL_ATR + ");";
+            WeatherEntry.COLUMN_DEGREES + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            /*
+             * To ensure this table can only contain one weather entry per date, we declare
+             * the date column to be unique. We also specify "ON CONFLICT REPLACE". This tells
+             * SQLite that if we have a weather entry for a certain date and we attempt to
+             * insert another weather entry with that date, we replace the old weather entry.
+             */
+            "UNIQUE (" + WeatherEntry.COLUMN_DATE + ") ON CONFLICT REPLACE);";
 
     private static final String SQL_DROP_WEATHER_TABLE = "DROP TABLE IF EXIST " + WeatherEntry.TABLE_NAME;
 
