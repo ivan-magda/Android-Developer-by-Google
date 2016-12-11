@@ -1,4 +1,4 @@
-package com.example.android.sunshine.data;
+package com.example.android.sunshine.activity.adapter;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
