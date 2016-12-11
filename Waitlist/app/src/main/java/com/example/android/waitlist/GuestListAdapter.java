@@ -11,19 +11,20 @@ import android.widget.TextView;
 public class GuestListAdapter extends RecyclerView.Adapter<GuestListAdapter.GuestViewHolder> {
 
     private Context mContext;
+    private int mCount;
 
     /**
      * Constructor using the context and the db cursor
      *
      * @param context the calling context/activity
      */
-    public GuestListAdapter(Context context) {
+    public GuestListAdapter(Context context, int count) {
         this.mContext = context;
+        this.mCount = count;
     }
 
     @Override
     public GuestViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.guest_list_item, parent, false);
         return new GuestViewHolder(view);
@@ -37,7 +38,7 @@ public class GuestListAdapter extends RecyclerView.Adapter<GuestListAdapter.Gues
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mCount;
     }
 
 

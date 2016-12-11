@@ -47,7 +47,7 @@ public final class WaitlistDbHelper extends SQLiteOpenHelper {
     private static final String DEFAULT_ATR = " DEFAULT";
     private static final String COMMA_SEP = ",";
 
-    private static final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE" +
+    private static final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE " +
             WaitlistEntry.TABLE_NAME + " (" +
             WaitlistEntry._ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
             WaitlistEntry.COLUMN_GUEST_NAME + TEXT_TYPE + NOT_NULL_ATR + COMMA_SEP +
