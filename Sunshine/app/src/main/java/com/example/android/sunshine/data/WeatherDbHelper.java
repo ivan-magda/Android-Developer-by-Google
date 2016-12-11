@@ -25,10 +25,11 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
      * use-case, we wanted to watch out for it and warn you what could happen if you mistakenly
      * version your databases.
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String REAL_TYPE = " REAL";
+    private static final String NOT_NULL_ATR = " NOT NULL";
     private static final String COMMA_SEP = ", ";
 
     /*
@@ -43,14 +44,16 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
              * named "_ID". We use that here to designate our table's primary key.
              */
             WeatherEntry._ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
-            WeatherEntry.COLUMN_DATE + INTEGER_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_WEATHER_ID + INTEGER_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_MIN_TEMP + REAL_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_MAX_TEMP + REAL_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_HUMIDITY + REAL_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_PRESSURE + REAL_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_WIND_SPEED + REAL_TYPE + COMMA_SEP +
-            WeatherEntry.COLUMN_DEGREES + REAL_TYPE + ");";
+            WeatherEntry.COLUMN_DATE + INTEGER_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_WEATHER_ID + INTEGER_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_MIN_TEMP + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_MAX_TEMP + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_HUMIDITY + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_PRESSURE + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_WIND_SPEED + REAL_TYPE + NOT_NULL_ATR + COMMA_SEP +
+            WeatherEntry.COLUMN_DEGREES + REAL_TYPE + NOT_NULL_ATR + ");";
+
+    private static final String SQL_DROP_WEATHER_TABLE = "DROP TABLE IF EXIST " + WeatherEntry.TABLE_NAME;
 
     /**
      * Constructs a new instance of {@link SQLiteOpenHelper}.
@@ -86,6 +89,8 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        sqLiteDatabase.execSQL(SQL_DROP_WEATHER_TABLE);
+        onCreate(sqLiteDatabase);
     }
 
 }
