@@ -26,10 +26,36 @@ import android.provider.BaseColumns;
 
 public class WaitlistContract {
 
+    // Prevent someone from accidentally instantiating the contract class.
+    private WaitlistContract() {
+    }
+
     public static final class WaitlistEntry implements BaseColumns {
+
+        /**
+         * Name of database table for the waitlist.
+         */
         public static final String TABLE_NAME = "waitlist";
+
+        /**
+         * Name of the guest.
+         * <p/>
+         * Type: TEXT
+         */
         public static final String COLUMN_GUEST_NAME = "guestName";
+
+        /**
+         * Size of the party.
+         * <p/>
+         * Type: INTEGER
+         */
         public static final String COLUMN_PARTY_SIZE = "partySize";
+
+        /**
+         * Current timestamp.
+         * <p/>
+         * Type: TIMESTAMP
+         */
         public static final String COLUMN_TIMESTAMP = "timestamp";
     }
 
