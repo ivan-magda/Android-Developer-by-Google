@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView waitlistRecyclerView = (RecyclerView) this.findViewById(R.id.all_guests_list_view);
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Cursor cursor = getAllGuests();
-        mAdapter = new GuestListAdapter(this, cursor.getCount());
+        mAdapter = new GuestListAdapter(this, getAllGuests());
         waitlistRecyclerView.setAdapter(mAdapter);
     }
 
