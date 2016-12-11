@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -30,6 +31,8 @@ import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
  * Gets the data from the ContentProvider and shows a series of flash cards.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     // The current state of the app
     private int mCurrentState;
@@ -95,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Cursor cursor) {
             super.onPostExecute(cursor);
             mData = cursor;
+
+            final int NOT_FOUND = -1;
+            int wordColumn = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD);
+            int definitionColumn = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION);
+
+            if (wordColumn != NOT_FOUND && definitionColumn != NOT_FOUND) {
+                while (cursor.moveToNext()) {
+                    String word = mData.getString(wordColumn);
+                    String definition = mData.getString(definitionColumn);
+                    Log.v(LOG_TAG, word + "-" + definition);
+                }
+            }
+            mData.close();
         }
     }
 
