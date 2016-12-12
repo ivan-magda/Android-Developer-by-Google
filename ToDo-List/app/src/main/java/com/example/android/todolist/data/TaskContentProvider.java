@@ -17,9 +17,12 @@
 package com.example.android.todolist.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -63,41 +66,45 @@ public class TaskContentProvider extends ContentProvider {
         return true;
     }
 
-
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case TASKS:
+                long id = database.insertOrThrow(TaskContract.TaskEntry.TABLE_NAME, null, values);
+                notifyChangeForUri(uri);
+                return ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, id);
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
-
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-
     @Override
     public String getType(@NonNull Uri uri) {
-
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void notifyChangeForUri(Uri uri) {
+        Context context = getContext();
+        if (context != null) context.getContentResolver().notifyChange(uri, null);
     }
 
 }
