@@ -26,6 +26,8 @@
 
     <string name="error_message">Failed to get results, please try again.</string>
 
+    <string name="content_authority">com.example.android.sunshine</string>
+
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
     <!-- - - - - - - - - - - - - -->
