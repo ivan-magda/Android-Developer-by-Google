@@ -26,6 +26,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.example.android.todolist.data.TaskContract.TaskEntry;
+
 public class TaskContentProvider extends ContentProvider {
 
     // Define final integer constants for the directory of tasks and a single item.
@@ -72,9 +74,9 @@ public class TaskContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case TASKS:
-                long id = database.insertOrThrow(TaskContract.TaskEntry.TABLE_NAME, null, values);
+                long id = database.insertOrThrow(TaskEntry.TABLE_NAME, null, values);
                 notifyChangeForUri(uri);
-                return ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, id);
+                return ContentUris.withAppendedId(TaskEntry.CONTENT_URI, id);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -83,7 +85,20 @@ public class TaskContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase database = mTaskDbHelper.getReadableDatabase();
+        Cursor cursor;
+
+        switch (sUriMatcher.match(uri)) {
+            case TASKS:
+                cursor = database.query(TaskEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        setNotificationUri(uri, cursor);
+
+        return cursor;
     }
 
     @Override
@@ -105,6 +120,11 @@ public class TaskContentProvider extends ContentProvider {
     private void notifyChangeForUri(Uri uri) {
         Context context = getContext();
         if (context != null) context.getContentResolver().notifyChange(uri, null);
+    }
+
+    private void setNotificationUri(Uri uri, Cursor cursor) {
+        Context context = getContext();
+        if (context != null) cursor.setNotificationUri(context.getContentResolver(), uri);
     }
 
 }

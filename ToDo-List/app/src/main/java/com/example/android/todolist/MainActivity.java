@@ -27,7 +27,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
+
+import com.example.android.todolist.data.TaskContract.TaskEntry;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -99,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
-
     /**
      * This method is called after this activity has been paused or restarted.
      * Often, this is after new data has been inserted through an AddTaskActivity,
@@ -111,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements
         // re-queries for all tasks
         getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
-
 
     /**
      * Instantiates and returns a new AsyncTaskLoader with the given ID.
@@ -142,8 +143,14 @@ public class MainActivity extends AppCompatActivity implements
             // loadInBackground() performs asynchronous loading of data
             @Override
             public Cursor loadInBackground() {
-                // Will implement to load data
-                return null;
+                try {
+                    return getContentResolver().query(TaskEntry.CONTENT_URI, null, null, null,
+                            TaskEntry.COLUMN_PRIORITY);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "Failed to asynchronously load data.");
+                    e.printStackTrace();
+                    return null;
+                }
             }
 
             // deliverResult sends the result of the load, a Cursor, to the registered listener
@@ -154,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements
         };
 
     }
-
 
     /**
      * Called when a previously created loader has finished its load.

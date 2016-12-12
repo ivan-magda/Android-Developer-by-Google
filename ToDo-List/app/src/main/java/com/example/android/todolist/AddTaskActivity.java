@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import static com.example.android.todolist.data.TaskContract.TaskEntry;
 
-
 public class AddTaskActivity extends AppCompatActivity {
 
     // Declare a member variable to keep track of a task's selected mPriority
