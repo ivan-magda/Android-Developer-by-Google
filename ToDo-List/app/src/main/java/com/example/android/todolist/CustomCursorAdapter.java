@@ -76,7 +76,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         mCursor.moveToPosition(position); // get to the right location in the cursor
 
         // Determine the values of the wanted data
-        final int id = mCursor.getInt(idIndex);
+        final long id = mCursor.getLong(idIndex);
         String description = mCursor.getString(descriptionIndex);
         int priority = mCursor.getInt(priorityIndex);
 

@@ -18,6 +18,7 @@ package com.example.android.todolist;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -29,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract.TaskEntry;
 
@@ -75,7 +77,14 @@ public class MainActivity extends AppCompatActivity implements
             // Called when a user swipes left or right on a ViewHolder
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                // Here is where you'll implement swipe to delete
+                long id = (long) viewHolder.itemView.getTag();
+                Uri uri = TaskEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+                int rowsDeleted = getContentResolver().delete(uri, null, null);
+
+                String message = (rowsDeleted > 0 ? "Task successfully deleted" : "Failed to delete task");
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                restartLoader();
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -111,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         // re-queries for all tasks
+        restartLoader();
+    }
+
+    private void restartLoader() {
         getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
