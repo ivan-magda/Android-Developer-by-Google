@@ -18,11 +18,36 @@ package com.example.android.todolist.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 public class TaskContentProvider extends ContentProvider {
+
+    // Define final integer constants for the directory of tasks and a single item.
+    // It's convention to use 100, 200, 300, etc for directories,
+    // and related ints (101, 102, ..) for items in that directory.
+    public static final int TASKS = 100;
+    public static final int TASK_WITH_ID = 101;
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+    /**
+     * Initialize a new matcher object without any matches,
+     * then use .addURI(String authority, String path, int match) to add matches
+     */
+    public static UriMatcher buildUriMatcher() {
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        /**
+         * All paths added to the UriMatcher have a corresponding int.
+         * For each kind of uri you may want to access, add the corresponding match with addURI.
+         * The two calls below add matches for the task directory and a single item by ID.
+         */
+        uriMatcher.addURI(TaskContract.AUTHORITY, TaskContract.PATH_TASKS, TASKS);
+        uriMatcher.addURI(TaskContract.AUTHORITY, TaskContract.PATH_TASKS + "/#", TASK_WITH_ID);
+        return uriMatcher;
+    }
 
     private TaskDbHelper mTaskDbHelper;
 
