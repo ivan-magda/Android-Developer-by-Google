@@ -216,7 +216,18 @@ public final class WeatherProvider extends ContentProvider {
      */
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        throw new RuntimeException("Method does't implemented");
+        if (sUriMatcher.match(uri) == WEATHER) {
+            final SQLiteDatabase database = mDatabaseHelper.getWritableDatabase();
+            int rowsDeleted = database.delete(WeatherEntry.TABLE_NAME, selection, selectionArgs);
+
+            if (rowsDeleted != 0) {
+                notifyChangeForUri(uri);
+            }
+
+            return rowsDeleted;
+        } else {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     @Override
