@@ -18,13 +18,10 @@ package com.example.android.todolist.data;
 
 import android.provider.BaseColumns;
 
-
 public class TaskContract {
-
 
     /* TaskEntry is an inner class that defines the contents of the task table */
     public static final class TaskEntry implements BaseColumns {
-
 
         // Task table and column names
         public static final String TABLE_NAME = "tasks";
@@ -33,7 +30,6 @@ public class TaskContract {
         // "_ID" column in addition to the two below
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_PRIORITY = "priority";
-
 
         /*
         The above table structure looks something like the sample table below.
@@ -59,4 +55,5 @@ public class TaskContract {
          */
 
     }
+
 }

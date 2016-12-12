@@ -39,7 +39,6 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     private Cursor mCursor;
     private Context mContext;
 
-
     /**
      * Constructor for the CustomCursorAdapter that initializes the Context.
      *
@@ -49,7 +48,6 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         this.mContext = mContext;
     }
 
-
     /**
      * Called when ViewHolders are created to fill a RecyclerView.
      *
@@ -57,24 +55,19 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
      */
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         // Inflate the task_layout to a view
-        View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.task_layout, parent, false);
-
+        View view = LayoutInflater.from(mContext).inflate(R.layout.task_layout, parent, false);
         return new TaskViewHolder(view);
     }
-
 
     /**
      * Called by the RecyclerView to display data at a specified position in the Cursor.
      *
-     * @param holder The ViewHolder to bind Cursor data to
+     * @param holder   The ViewHolder to bind Cursor data to
      * @param position The position of the data in the Cursor
      */
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
-
         // Indices for the _id, description, and priority columns
         int idIndex = mCursor.getColumnIndex(TaskContract.TaskEntry._ID);
         int descriptionIndex = mCursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_DESCRIPTION);
@@ -99,9 +92,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         // Get the appropriate background color based on the priority
         int priorityColor = getPriorityColor(priority);
         priorityCircle.setColor(priorityColor);
-
     }
-
 
     /*
     Helper method for selecting the correct priority circle color.
@@ -109,51 +100,46 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     */
     private int getPriorityColor(int priority) {
         int priorityColor = 0;
-
-        switch(priority) {
-            case 1: priorityColor = ContextCompat.getColor(mContext, R.color.materialRed);
+        switch (priority) {
+            case 1:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialRed);
                 break;
-            case 2: priorityColor = ContextCompat.getColor(mContext, R.color.materialOrange);
+            case 2:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialOrange);
                 break;
-            case 3: priorityColor = ContextCompat.getColor(mContext, R.color.materialYellow);
+            case 3:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialYellow);
                 break;
-            default: break;
+            default:
+                break;
         }
         return priorityColor;
     }
-
 
     /**
      * Returns the number of items to display.
      */
     @Override
     public int getItemCount() {
-        if (mCursor == null) {
-            return 0;
-        }
-        return mCursor.getCount();
+        return (mCursor == null ? 0 : mCursor.getCount());
     }
-
 
     /**
      * When data changes and a re-query occurs, this function swaps the old Cursor
-     * with a newly updated Cursor (Cursor c) that is passed in.
+     * with a newly updated Cursor (Cursor cursor) that is passed in.
      */
-    public Cursor swapCursor(Cursor c) {
+    public Cursor swapCursor(Cursor cursor) {
         // check if this cursor is the same as the previous cursor (mCursor)
-        if (mCursor == c) {
-            return null; // bc nothing has changed
-        }
+        if (mCursor == cursor) return null; // bc nothing has changed
         Cursor temp = mCursor;
-        this.mCursor = c; // new cursor value assigned
+        this.mCursor = cursor; // new cursor value assigned
 
         //check if this is a valid cursor, then update the cursor
-        if (c != null) {
+        if (cursor != null) {
             this.notifyDataSetChanged();
         }
         return temp;
     }
-
 
     // Inner class for creating ViewHolders
     class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -169,9 +155,9 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
          */
         public TaskViewHolder(View itemView) {
             super(itemView);
-
             taskDescriptionView = (TextView) itemView.findViewById(R.id.taskDescription);
             priorityView = (TextView) itemView.findViewById(R.id.priorityTextView);
         }
     }
+
 }

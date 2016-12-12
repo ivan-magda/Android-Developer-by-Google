@@ -27,7 +27,6 @@ public class AddTaskActivity extends AppCompatActivity {
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
 
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
@@ -37,7 +36,6 @@ public class AddTaskActivity extends AppCompatActivity {
         mPriority = 1;
     }
 
-
     /**
      * onClickAddTask is called when the "ADD" button is clicked.
      * It retrieves user input and inserts that new task data into the underlying database.
@@ -45,7 +43,6 @@ public class AddTaskActivity extends AppCompatActivity {
     public void onClickAddTask(View view) {
         // Not yet implemented
     }
-
 
     /**
      * onPrioritySelected is called whenever a priority button is clicked.
@@ -60,4 +57,5 @@ public class AddTaskActivity extends AppCompatActivity {
             mPriority = 3;
         }
     }
+
 }

@@ -11,6 +11,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <provider
+            android:name=".data.TaskContentProvider"
+            android:authorities="com.example.android.todolist"
+            android:exported="false" />
+
         <!-- The manifest entry for the MainActivity -->
         <activity android:name="com.example.android.todolist.MainActivity">
             <intent-filter>
