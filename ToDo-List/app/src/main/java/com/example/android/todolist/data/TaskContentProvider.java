@@ -93,9 +93,19 @@ public class TaskContentProvider extends ContentProvider {
                 cursor = database.query(TaskEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
+            case TASK_WITH_ID:
+                selection = TaskEntry._ID + "=?";
+                selectionArgs = new String[]{idStringFrom(uri)};
+                cursor = database.query(TaskEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
+        // Set notification URI on the Cursor,
+        // so we know what content URI the Cursor was created for.
+        // If the data at this URI changes, then we know we need to update the Cursor.
         setNotificationUri(uri, cursor);
 
         return cursor;
@@ -125,6 +135,10 @@ public class TaskContentProvider extends ContentProvider {
     private void setNotificationUri(Uri uri, Cursor cursor) {
         Context context = getContext();
         if (context != null) cursor.setNotificationUri(context.getContentResolver(), uri);
+    }
+
+    private String idStringFrom(Uri uri) {
+        return String.valueOf(ContentUris.parseId(uri));
     }
 
 }
