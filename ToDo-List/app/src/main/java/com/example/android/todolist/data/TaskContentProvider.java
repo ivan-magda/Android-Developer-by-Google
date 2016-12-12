@@ -141,7 +141,23 @@ public class TaskContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        int rowsUpdated = 0;
+        switch (sUriMatcher.match(uri)) {
+            case TASK_WITH_ID:
+                selection = TaskEntry._ID + "=?";
+                selectionArgs = new String[]{idStringFrom(uri)};
+                rowsUpdated = mTaskDbHelper.getWritableDatabase().update(TaskEntry.TABLE_NAME,
+                        values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (rowsUpdated != 0) {
+            notifyChangeForUri(uri);
+        }
+
+        return rowsUpdated;
     }
 
     @Override
