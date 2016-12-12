@@ -60,7 +60,7 @@ public final class WeatherDbHelper extends SQLiteOpenHelper {
              */
             "UNIQUE (" + WeatherEntry.COLUMN_DATE + ") ON CONFLICT REPLACE);";
 
-    private static final String SQL_DROP_WEATHER_TABLE = "DROP TABLE IF EXIST " + WeatherEntry.TABLE_NAME;
+    private static final String SQL_DROP_WEATHER_TABLE = "DROP TABLE IF EXISTS " + WeatherEntry.TABLE_NAME;
 
     /**
      * Constructs a new instance of {@link SQLiteOpenHelper}.

@@ -1,6 +1,7 @@
 package com.example.android.sunshine.activity.adapter;
 
-import android.support.v7.util.DiffUtil;
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.sunshine.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.android.sunshine.activity.MainActivity;
+import com.example.android.sunshine.utilities.SunshineDateUtils;
+import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
@@ -21,14 +22,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         void onClick(int selectedIndex, String selectedWeather);
     }
 
-    private List<String> mWeatherData;
+    private Cursor mCursor;
     private ForecastAdapterOnClickListener mClickListener;
 
     /**
      * Creates a ForecastAdapter.
      */
     public ForecastAdapter() {
-        this.mWeatherData = new ArrayList<>();
+        this.mCursor = null;
         this.mClickListener = null;
     }
 
@@ -37,49 +38,15 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      *
      * @param clickListener The on-click handler for this adapter. This single handler is called
      *                      when an item is clicked.
-     * @param weatherData   The data source.
+     * @param cursor        The cursor.
      */
-    public ForecastAdapter(List<String> weatherData, ForecastAdapterOnClickListener clickListener) {
-        this.mWeatherData = weatherData;
+    public ForecastAdapter(Cursor cursor, ForecastAdapterOnClickListener clickListener) {
+        this.mCursor = cursor;
         this.mClickListener = clickListener;
     }
 
     public void setListItemClickListener(ForecastAdapterOnClickListener forecastAdapterOnClickListener) {
         this.mClickListener = forecastAdapterOnClickListener;
-    }
-
-    /**
-     * This method is used to set the weather forecast on a ForecastAdapter if we've already
-     * created one. This is handy when we get new data from the web but don't want to create a
-     * new ForecastAdapter to display it.
-     *
-     * @param newWeatherData The new weather data to be displayed.
-     */
-    public void updateWithNewData(final List<String> newWeatherData) {
-        final List<String> oldData = new ArrayList<>(this.mWeatherData);
-        this.mWeatherData.clear();
-        if (newWeatherData != null) this.mWeatherData.addAll(newWeatherData);
-        DiffUtil.calculateDiff(new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return oldData.size();
-            }
-
-            @Override
-            public int getNewListSize() {
-                return mWeatherData.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldData.get(oldItemPosition).equals(mWeatherData.get(newItemPosition));
-            }
-
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldData.get(oldItemPosition).equals(mWeatherData.get(newItemPosition));
-            }
-        }).dispatchUpdatesTo(this);
     }
 
     /**
@@ -97,6 +64,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public ForecastAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View listItem = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.forecast_list_item, viewGroup, false);
+        listItem.setFocusable(true);
         return new ForecastAdapterViewHolder(listItem);
     }
 
@@ -112,7 +80,23 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        forecastAdapterViewHolder.setWeatherData(mWeatherData.get(position));
+        final Context context = forecastAdapterViewHolder.itemView.getContext();
+        mCursor.moveToPosition(position);
+
+        long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+        String dateString = SunshineDateUtils.getFriendlyDateString(context, dateInMillis, false);
+
+        int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+        String description = SunshineWeatherUtils.getStringForWeatherCondition(context, weatherId);
+
+        double highInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
+        double lowInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
+
+        String highAndLowTemperature =
+                SunshineWeatherUtils.formatHighLows(context, highInCelsius, lowInCelsius);
+        String weatherSummary = dateString + " - " + description + " - " + highAndLowTemperature;
+
+        forecastAdapterViewHolder.setWeatherData(weatherSummary);
     }
 
     /**
@@ -123,7 +107,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public int getItemCount() {
-        return (mWeatherData == null ? 0 : mWeatherData.size());
+        return (mCursor == null ? 0 : mCursor.getCount());
+    }
+
+    public void swapCursor(Cursor cursor) {
+        mCursor = cursor;
+        notifyDataSetChanged();
     }
 
     /**
