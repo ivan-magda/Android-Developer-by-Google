@@ -160,9 +160,24 @@ public class TaskContentProvider extends ContentProvider {
         return rowsUpdated;
     }
 
+    /**
+     * getType() handles requests for the MIME type of data
+     * We are working with two types of data:
+     * 1) a directory and 2) a single row of data.
+     * This method will not be used in our app, but gives a way to standardize the data formats
+     * that your provider accesses, and this can be useful for data organization.
+     * For now, this method will not be used but will be provided for completeness.
+     */
     @Override
     public String getType(@NonNull Uri uri) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        switch (sUriMatcher.match(uri)) {
+            case TASKS:
+                return "vnd.android.cursor.dir" + "/" + TaskContract.AUTHORITY + "/" + TaskContract.PATH_TASKS;
+            case TASK_WITH_ID:
+                return "vnd.android.cursor.item" + "/" + TaskContract.AUTHORITY + "/" + TaskContract.PATH_TASKS;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     private void notifyChangeForUri(Uri uri) {
