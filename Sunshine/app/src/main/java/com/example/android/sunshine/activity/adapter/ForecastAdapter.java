@@ -19,7 +19,11 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      * The interface that receives onClick messages.
      */
     public interface ForecastAdapterOnClickListener {
-        void onClick(int selectedIndex, String selectedWeather);
+        /**
+         * @param position     Index of the selected item.
+         * @param dateInMillis The date of item.
+         */
+        void onClick(int position, long dateInMillis);
     }
 
     private Cursor mCursor;
@@ -80,23 +84,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        final Context context = forecastAdapterViewHolder.itemView.getContext();
         mCursor.moveToPosition(position);
-
-        long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-        String dateString = SunshineDateUtils.getFriendlyDateString(context, dateInMillis, false);
-
-        int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
-        String description = SunshineWeatherUtils.getStringForWeatherCondition(context, weatherId);
-
-        double highInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
-        double lowInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
-
-        String highAndLowTemperature =
-                SunshineWeatherUtils.formatHighLows(context, highInCelsius, lowInCelsius);
-        String weatherSummary = dateString + " - " + description + " - " + highAndLowTemperature;
-
-        forecastAdapterViewHolder.setWeatherData(weatherSummary);
+        forecastAdapterViewHolder.bindWithCursor(mCursor);
     }
 
     /**
@@ -120,7 +109,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mWeatherTextView;
-        String mWeatherData;
+        private long mNormalizedDate;
 
         ForecastAdapterViewHolder(View itemView) {
             super(itemView);
@@ -131,12 +120,28 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            if (mClickListener != null) mClickListener.onClick(position, mWeatherData);
+            if (mClickListener != null) mClickListener.onClick(position, mNormalizedDate);
         }
 
-        void setWeatherData(String weatherData) {
-            this.mWeatherData = weatherData;
-            mWeatherTextView.setText(weatherData);
+        void bindWithCursor(Cursor cursor) {
+            final Context context = itemView.getContext();
+
+            long dateInMillis = cursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+            String dateString = SunshineDateUtils.getFriendlyDateString(context, dateInMillis, false);
+
+            int weatherId = cursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+            String description = SunshineWeatherUtils.getStringForWeatherCondition(context, weatherId);
+
+            double highInCelsius = cursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
+            double lowInCelsius = cursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
+
+            String highAndLowTemperature =
+                    SunshineWeatherUtils.formatHighLows(context, highInCelsius, lowInCelsius);
+            String weatherSummary = dateString + " - " + description + " - " + highAndLowTemperature;
+
+            this.mNormalizedDate = dateInMillis;
+            mWeatherTextView.setText(weatherSummary);
         }
     }
+
 }

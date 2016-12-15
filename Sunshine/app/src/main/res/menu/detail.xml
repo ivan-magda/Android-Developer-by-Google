@@ -5,7 +5,7 @@
         android:id="@+id/action_share_weather"
         android:orderInCategory="1"
         android:title="@string/action_share_weather"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_settings"

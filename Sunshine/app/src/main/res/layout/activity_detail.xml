@@ -1,18 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.android.sunshine.activity.DetailActivity">
 
     <TextView
-        android:id="@+id/tv_detail_weather_display"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:padding="16dp"
-        tools:text="Cloud" />
+        android:id="@+id/tv_detail_date"
+        style="@style/DetailTextView"
+        tools:text="Today, December 12" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/tv_detail_description"
+        style="@style/DetailTextView"
+        tools:text="Drizzle" />
+
+    <TextView
+        android:id="@+id/tv_detail_high_temperature"
+        style="@style/DetailTextView"
+        tools:text="6" />
+
+    <TextView
+        android:id="@+id/tv_detail_low_temperature"
+        style="@style/DetailTextView"
+        tools:text="-3" />
+
+    <TextView
+        android:id="@+id/tv_detail_humidity"
+        style="@style/DetailTextView"
+        tools:text="63 %" />
+
+    <TextView
+        android:id="@+id/tv_detail_pressure"
+        style="@style/DetailTextView"
+        tools:text="938 hPa" />
+
+    <TextView
+        android:id="@+id/tv_detail_wind"
+        style="@style/DetailTextView"
+        tools:text="0 km/h N" />
+
+</LinearLayout>

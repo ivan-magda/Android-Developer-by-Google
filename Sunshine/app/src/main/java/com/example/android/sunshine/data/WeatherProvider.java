@@ -16,7 +16,7 @@ import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 public final class WeatherProvider extends ContentProvider {
 
-    /*
+    /**
      * These constant will be used to match URIs with the data they are looking for. We will take
      * advantage of the UriMatcher class to make that matching MUCH easier than doing something
      * ourselves, such as using regular expressions.
@@ -61,7 +61,7 @@ public final class WeatherProvider extends ContentProvider {
          * constant fields in your class so that you can use them throughout the class and you no
          * they aren't going to change. In Sunshine, we use CODE_WEATHER or CODE_WEATHER_WITH_DATE.
          */
-        /* This URI is content://com.example.android.sunshine/weather/ */
+        /** This URI is content://com.example.android.sunshine/weather/ */
         uriMatcher.addURI(authority, WeatherContract.PATH_WEATHER, WEATHER);
 
         /**

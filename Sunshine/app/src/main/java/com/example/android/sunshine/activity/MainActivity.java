@@ -15,7 +15,6 @@
  */
 package com.example.android.sunshine.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -37,27 +36,27 @@ import android.widget.ProgressBar;
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.activity.adapter.ForecastAdapter;
 import com.example.android.sunshine.data.SunshinePreferences;
-import com.example.android.sunshine.data.WeatherContract;
+import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
 import com.example.android.sunshine.utilities.FakeDataUtils;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         ForecastAdapter.ForecastAdapterOnClickListener {
 
-    private final String TAG = MainActivity.class.getSimpleName();
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    /*
+    /**
      * The columns of data that we are interested in displaying within our MainActivity's list of
      * weather data.
      */
     public static final String[] MAIN_FORECAST_PROJECTION = {
-            WeatherContract.WeatherEntry.COLUMN_DATE,
-            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherEntry.COLUMN_DATE,
+            WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherEntry.COLUMN_WEATHER_ID,
     };
 
-    /*
+    /**
      * We store the indices of the values in the array of Strings above to more quickly be able to
      * access the data from our query. If the order of the Strings above changes, these indices
      * must be adjusted to match the order of the Strings.
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int INDEX_WEATHER_MIN_TEMP = 2;
     public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
-    /*
+    /**
      * This ID will be used to identify the Loader responsible for loading our weather forecast. In
      * some cases, one Activity can deal with many Loaders. However, in our case, there is only one.
      * We will still use this ID to initialize the loader and create the loader for best practice.
@@ -94,13 +93,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         FakeDataUtils.insertFakeData(this);
 
-        /*
+        /**
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
          */
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
 
-        /*
+        /**
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
          *
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        /*
+        /**
          * A LinearLayoutManager is responsible for measuring and positioning item views within a
          * RecyclerView into a linear list. This means that it can produce either a horizontal or
          * vertical list depending on which parameter you pass in to the LinearLayoutManager
@@ -126,16 +125,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        /* setLayoutManager associates the LayoutManager we created above with our RecyclerView */
+        /** setLayoutManager associates the LayoutManager we created above with our RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
 
-        /*
+        /**
          * Use this setting to improve performance if you know that changes in content do not
          * change the child layout size in the RecyclerView
          */
         mRecyclerView.setHasFixedSize(true);
 
-        /*
+        /**
          * The ForecastAdapter is responsible for linking our weather data with the Views that
          * will end up displaying our weather data.
          *
@@ -147,11 +146,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
          */
         mForecastAdapter = new ForecastAdapter(null, this);
 
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        /** Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);
 
         showLoading();
-        /*
+        /**
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
          * the last created loader is re-used.
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Log.d(TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+            Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
         }
     }
 
@@ -198,16 +197,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
         switch (loaderId) {
             case ID_FORECAST_LOADER:
-                /* URI for all rows of weather data in our weather table */
-                Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
-                /* Sort order: Ascending by date */
-                String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-                /*
+                /** URI for all rows of weather data in our weather table */
+                Uri forecastQueryUri = WeatherEntry.CONTENT_URI;
+                /** Sort order: Ascending by date */
+                String sortOrder = WeatherEntry.COLUMN_DATE + " ASC";
+                /**
                  * A SELECTION in SQL declares which rows you'd like to return. In our case, we
                  * want all weather data from today onwards that is stored in our weather table.
                  * We created a handy method to do that in our WeatherEntry class.
                  */
-                String selection = WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards();
+                String selection = WeatherEntry.getSqlSelectForTodayOnwards();
 
                 return new CursorLoader(this,
                         forecastQueryUri,
@@ -252,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        /*
+        /**
          * Since this Loader's data is now invalid, we need to clear the Adapter that is
          * displaying the data.
          */
@@ -262,16 +261,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /**
      * This method is for responding to clicks from our list.
      *
-     * @param selectedIndex   Selected item position in the list.
-     * @param selectedWeather String describing weather details for a particular day
+     * @param position     Index of the selected item.
+     * @param dateInMillis Selected item date in milliseconds.
      */
     @Override
-    public void onClick(int selectedIndex, String selectedWeather) {
-        Context context = this;
-        Class destinationClass = DetailActivity.class;
-        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, selectedWeather);
-        startActivity(intentToStartDetailActivity);
+    public void onClick(int position, long dateInMillis) {
+        Intent detail = new Intent(this, DetailActivity.class);
+        detail.putExtra(DetailActivity.EXTRA_WEATHER_URI, WeatherEntry.buildWeatherUriWithDate(dateInMillis));
+        startActivity(detail);
     }
 
     /**
@@ -282,9 +279,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * each view is currently visible or invisible.
      */
     private void showWeatherDataView() {
-        /* First, hide the loading indicator */
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        /* Finally, make sure the weather data is visible */
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -296,9 +291,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * each view is currently visible or invisible.
      */
     private void showLoading() {
-        /* Then, hide the weather data */
         mRecyclerView.setVisibility(View.INVISIBLE);
-        /* Finally, show the loading indicator */
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
