@@ -16,7 +16,6 @@
         <item quantity="other">Hydrate while charging reminder sent %d times</item>
     </plurals>
 
-
     <!-- Strings for Notifications and Toasts -->
     <string name="water_chug_toast">GLUG GLUG GLUG</string>
 

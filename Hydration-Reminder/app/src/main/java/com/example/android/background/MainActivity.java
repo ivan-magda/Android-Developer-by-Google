@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.android.background.sync.ReminderTasks;
 import com.example.android.background.sync.WaterReminderIntentService;
+import com.example.android.background.utilities.NotificationUtils;
 import com.example.android.background.utilities.PreferenceUtilities;
 
 public class MainActivity extends AppCompatActivity implements
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements
         } else if (PreferenceUtilities.KEY_CHARGING_REMINDER_COUNT.equals(key)) {
             updateChargingReminderCount();
         }
+    }
+
+    public void testNotification(View view) {
+        NotificationUtils.remindUserBecauseCharging(this);
     }
 
 }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.background">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,8 +15,12 @@
             android:name=".sync.WaterReminderIntentService"
             android:exported="false" />
 
+        <!-- Add the launch mode "single top" attribute to the MainActivity so that when you open
+         MainActivity using a notification, it will take you back to the already opened activity, not
+         generate a new one -->
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
