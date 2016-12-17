@@ -37,7 +37,7 @@ import com.example.android.sunshine.R;
 import com.example.android.sunshine.activity.adapter.ForecastAdapter;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
-import com.example.android.sunshine.utilities.FakeDataUtils;
+import com.example.android.sunshine.sync.SunshineSyncUtils;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -90,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (actionBar != null) {
             actionBar.setElevation(0f);
         }
-
-        FakeDataUtils.insertFakeData(this);
 
         /**
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -156,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
          * the last created loader is re-used.
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
+
+        SunshineSyncUtils.startImmediateSync(this);
     }
 
     /**
