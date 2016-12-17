@@ -15,6 +15,15 @@
             android:name=".sync.WaterReminderIntentService"
             android:exported="false" />
 
+        <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+        <service
+            android:name=".sync.WaterReminderFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
         <!-- Add the launch mode "single top" attribute to the MainActivity so that when you open
          MainActivity using a notification, it will take you back to the already opened activity, not
          generate a new one -->
