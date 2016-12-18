@@ -2,6 +2,7 @@ package com.example.android.sunshine.activity.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,11 @@ import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
+
+    private static final int VIEW_TYPE_TODAY = 0;
+    private static final int VIEW_TYPE_FUTURE_DAY = 1;
+
+    private boolean mUseTodayLayout;
 
     /**
      * The interface that receives onClick messages.
@@ -32,22 +38,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     /**
      * Creates a ForecastAdapter.
-     */
-    public ForecastAdapter() {
-        this.mCursor = null;
-        this.mClickListener = null;
-    }
-
-    /**
-     * Creates a ForecastAdapter.
      *
+     * @param context       The context.
      * @param clickListener The on-click handler for this adapter. This single handler is called
      *                      when an item is clicked.
      * @param cursor        The cursor.
      */
-    public ForecastAdapter(Cursor cursor, ForecastAdapterOnClickListener clickListener) {
+    public ForecastAdapter(@NonNull final Context context, Cursor cursor,
+                           ForecastAdapterOnClickListener clickListener) {
         this.mCursor = cursor;
         this.mClickListener = clickListener;
+        mUseTodayLayout = context.getResources().getBoolean(R.bool.use_today_layout);
     }
 
     public void setListItemClickListener(ForecastAdapterOnClickListener forecastAdapterOnClickListener) {
@@ -67,9 +68,21 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public ForecastAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View listItem = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.forecast_list_item, viewGroup, false);
+        int layoutId;
+        switch (viewType) {
+            case VIEW_TYPE_TODAY:
+                layoutId = R.layout.list_item_forecast_today;
+                break;
+            case VIEW_TYPE_FUTURE_DAY:
+                layoutId = R.layout.forecast_list_item;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+        }
+
+        View listItem = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
         listItem.setFocusable(true);
+
         return new ForecastAdapterViewHolder(listItem);
     }
 
@@ -85,8 +98,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        mCursor.moveToPosition(position);
-        forecastAdapterViewHolder.bindWithCursor(mCursor);
+        forecastAdapterViewHolder.bindAtPosition(position);
     }
 
     /**
@@ -103,6 +115,21 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public void swapCursor(Cursor cursor) {
         mCursor = cursor;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Returns an integer code related to the type of View we want the ViewHolder to be at a given
+     * position. This method is useful when we want to use different layouts for different items
+     * depending on their position. In Sunshine, we take advantage of this method to provide a
+     * different layout for the "today" layout. The "today" layout is only shown in portrait mode
+     * with the first item in the list.
+     *
+     * @param position index within our RecyclerView and Cursor
+     * @return the view type (today or future day)
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return (mUseTodayLayout && position == 0 ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY);
     }
 
     /**
@@ -135,14 +162,27 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             if (mClickListener != null) mClickListener.onClick(position, mNormalizedDate);
         }
 
-        void bindWithCursor(Cursor cursor) {
+        void bindAtPosition(final int position) {
+            mCursor.moveToPosition(position);
             final Context context = itemView.getContext();
 
             /****************
              * Weather Icon *
              ****************/
             int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
-            int weatherImageId = SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(weatherId);
+
+            int weatherImageId;
+            int viewType = ForecastAdapter.this.getItemViewType(position);
+            switch (viewType) {
+                case VIEW_TYPE_TODAY:
+                    weatherImageId = SunshineWeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherId);
+                    break;
+                case VIEW_TYPE_FUTURE_DAY:
+                    weatherImageId = SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(weatherId);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+            }
             iconView.setImageResource(weatherImageId);
 
             /****************
