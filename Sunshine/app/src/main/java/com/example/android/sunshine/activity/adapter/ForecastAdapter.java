@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.sunshine.R;
@@ -108,12 +109,23 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      * Cache of the children views for a forecast list item.
      */
     class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mWeatherTextView;
+        final TextView dateView;
+        final TextView descriptionView;
+        final TextView highTempView;
+        final TextView lowTempView;
+        final ImageView iconView;
+
         private long mNormalizedDate;
 
         ForecastAdapterViewHolder(View itemView) {
             super(itemView);
-            mWeatherTextView = (TextView) itemView.findViewById(R.id.tv_weather_data);
+
+            iconView = (ImageView) itemView.findViewById(R.id.weather_icon);
+            dateView = (TextView) itemView.findViewById(R.id.date);
+            descriptionView = (TextView) itemView.findViewById(R.id.weather_description);
+            highTempView = (TextView) itemView.findViewById(R.id.high_temperature);
+            lowTempView = (TextView) itemView.findViewById(R.id.low_temperature);
+
             itemView.setOnClickListener(this);
         }
 
@@ -126,21 +138,64 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         void bindWithCursor(Cursor cursor) {
             final Context context = itemView.getContext();
 
-            long dateInMillis = cursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+            /****************
+             * Weather Icon *
+             ****************/
+            int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+            int weatherImageId = SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(weatherId);
+            iconView.setImageResource(weatherImageId);
+
+            /****************
+             * Weather Date *
+             ****************/
+            long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             String dateString = SunshineDateUtils.getFriendlyDateString(context, dateInMillis, false);
-
-            int weatherId = cursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
-            String description = SunshineWeatherUtils.getStringForWeatherCondition(context, weatherId);
-
-            double highInCelsius = cursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
-            double lowInCelsius = cursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
-
-            String highAndLowTemperature =
-                    SunshineWeatherUtils.formatHighLows(context, highInCelsius, lowInCelsius);
-            String weatherSummary = dateString + " - " + description + " - " + highAndLowTemperature;
+            dateView.setText(dateString);
 
             this.mNormalizedDate = dateInMillis;
-            mWeatherTextView.setText(weatherSummary);
+
+            /***********************
+             * Weather Description *
+             ***********************/
+            String description = SunshineWeatherUtils.getStringForWeatherCondition(context, weatherId);
+            String descriptionA11y = context.getString(R.string.a11y_forecast, description);
+
+            /* Set the text and content description (for accessibility purposes) */
+            descriptionView.setText(description);
+            descriptionView.setContentDescription(descriptionA11y);
+
+            /**************************
+             * High (max) temperature *
+             **************************/
+            double highInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
+            /**
+             * If the user's preference for weather is fahrenheit, formatTemperature will convert
+             * the temperature. This method will also append either °C or °F to the temperature
+             * String.
+             */
+            String highString = SunshineWeatherUtils.formatTemperature(context, highInCelsius);
+            String highA11y = context.getString(R.string.a11y_high_temp, highString);
+
+            /** Set the text and content description (for accessibility purposes) */
+            highTempView.setText(highString);
+            highTempView.setContentDescription(highA11y);
+
+            /*************************
+             * Low (min) temperature *
+             *************************/
+            /** Read low temperature from the cursor (in degrees celsius) */
+            double lowInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
+            /**
+             * If the user's preference for weather is fahrenheit, formatTemperature will convert
+             * the temperature. This method will also append either °C or °F to the temperature
+             * String.
+             */
+            String lowString = SunshineWeatherUtils.formatTemperature(context, lowInCelsius);
+            String lowA11y = context.getString(R.string.a11y_low_temp, lowString);
+
+            /** Set the text and content description (for accessibility purposes) */
+            lowTempView.setText(lowString);
+            lowTempView.setContentDescription(lowA11y);
         }
     }
 
