@@ -12,8 +12,6 @@
     tools:context="com.example.android.visualpolish.ColorFontActivity">
 
     <!-- Views for displaying colors -->
-    <!-- TODO (3) Add a view to display the newly created "colorPrimaryLight"; layout height = 48dp -->
-
     <View
         android:id="@+id/primaryLight"
         android:layout_width="match_parent"
@@ -81,7 +79,6 @@
         android:text="@string/medium_20"
         android:textSize="20sp" />
 
-    <!-- TODO (4) Add a text view to display text with a size = 16sp, and a font-family = sans-serif-smallcaps -->
     <TextView
         android:id="@+id/text16"
         android:layout_width="match_parent"
