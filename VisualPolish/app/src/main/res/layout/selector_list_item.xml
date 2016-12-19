@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_selector"
+    android:orientation="vertical">
 
     <!-- Horizontal linear layout to create a contacts list item -->
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:paddingTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingBottom="4dp"
-        android:gravity="center_vertical">
+        android:paddingTop="4dp">
 
         <!-- Person icon -->
         <ImageView
             android:id="@+id/personIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_person"
-            android:paddingRight="4dp"
+            android:contentDescription="@string/person_icon"
             android:paddingLeft="4dp"
-            android:contentDescription="@string/person_icon"/>
+            android:paddingRight="4dp"
+            android:src="@drawable/ic_person" />
 
         <!-- Text views for a person's first and last name -->
         <TextView
             android:id="@+id/firstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="24sp"
-            android:textColor="@android:color/black"
-            android:text="@string/first"
+            android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:paddingLeft ="4dp"/>
+            android:text="@string/first"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/last"
+            android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:paddingLeft ="4dp"/>
+            android:text="@string/last"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="24sp" />
 
 
     </LinearLayout>
@@ -51,6 +53,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>
