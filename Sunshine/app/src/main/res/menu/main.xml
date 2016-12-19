@@ -5,7 +5,7 @@
         android:id="@+id/action_refresh"
         android:orderInCategory="1"
         android:title="@string/action_refresh"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_map"

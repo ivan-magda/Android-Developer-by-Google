@@ -25,14 +25,4 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
-    <style name="DetailTextView">
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/tv_padding</item>
-        <item name="android:paddingRight">@dimen/tv_padding</item>
-        <item name="android:paddingTop">@dimen/tv_padding</item>
-    </style>
-
 </resources>

@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="tv_padding">16dp</dimen>
-    <dimen name="tv_text_size">20sp</dimen>
-    <dimen name="tv_error_text_size">16sp</dimen>
-    <dimen name="pb_size">42dp</dimen>
-    <dimen name="tv_weather_data_text_size">22sp</dimen>
-    <dimen name="tv_list_item_padding">16dp</dimen>
-    <dimen name="separator_margin">8dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="forecast_detail_horizontal_padding">32dp</dimen>
+    <dimen name="forecast_detail_vertical_padding">16dp</dimen>
+
+    <!-- Icon Sizes -->
+    <dimen name="today_icon">96dp</dimen>
+    <dimen name="list_icon">40dp</dimen>
+
+    <!-- Text Sizes - We are using DP here rather than SP because these are already large
+         font sizes, and going larger will cause lots of view problems.  This is only for
+         the large forecast numbers in the forecast list -->
+    <dimen name="forecast_text_size">28dp</dimen>
+
+    <dimen name="forecast_temperature_space">4dp</dimen>
+
+    <!-- We will eventually use this to allow us to add additional padding for different screen
+         sizes-->
+    <dimen name="today_forecast_list_item_vertical_padding">16dp</dimen>
+    <dimen name="list_item_icon_margin_right">24dp</dimen>
+    <dimen name="list_item_icon_margin_end">@dimen/list_item_icon_margin_right</dimen>
+    <dimen name="list_item_padding_horizontal">16dp</dimen>
+    <dimen name="loading_indicator_size">42dp</dimen>
+    <dimen name="list_item_high_temperature_margin">12dp</dimen>
+    <dimen name="list_item_padding_vertical">12dp</dimen>
+    <dimen name="list_item_low_temperature_text_view_size">48dp</dimen>
+    <dimen name="list_item_date_left_margin">16dp</dimen>
+    <dimen name="list_item_date_start_margin">@dimen/list_item_date_left_margin</dimen>
+
 </resources>
