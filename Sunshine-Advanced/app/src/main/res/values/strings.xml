@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,5 +110,6 @@
 
     <!--Empty Weather Database-->
     <string name="empty_forecast_list">No Weather Information Available</string>
+    <string name="empty_forecast_list_no_network">No weather information available. The network is not available to fetch weather data.</string>
 
 </resources>
