@@ -38,10 +38,24 @@ public class Utility {
     }
 
     @SuppressWarnings("ResourceType")
-    public static @SunshineSyncAdapter.LocationStatus int getLocationStatus(final Context context) {
+    public static
+    @SunshineSyncAdapter.LocationStatus
+    int getLocationStatus(final Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getInt(context.getString(R.string.pref_location_status_key),
                 SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
+    /**
+     * Resets the location status.
+     * @param context Context used to get the SharedPreferences
+     */
+    public static void resetLocationStatus(final Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(context.getString(R.string.pref_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+        editor.apply();
     }
 
     public static String getPreferredLocation(Context context) {
