@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +14,30 @@
      limitations under the License.
  -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.example.android.sunshine.app"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditTextPreference
-        android:title="@string/pref_location_label"
-        android:key="@string/pref_location_key"
+    <com.example.android.sunshine.app.LocationEditTextPreference
         android:defaultValue="@string/pref_location_default"
         android:inputType="text"
-        android:singleLine="true" />
+        android:key="@string/pref_location_key"
+        android:singleLine="true"
+        android:title="@string/pref_location_label"
+        custom:minLength="3" />
 
     <ListPreference
-        android:title="@string/pref_units_label"
-        android:key="@string/pref_units_key"
         android:defaultValue="@string/pref_units_metric"
+        android:entries="@array/pref_units_options"
         android:entryValues="@array/pref_units_values"
-        android:entries="@array/pref_units_options" />
+        android:key="@string/pref_units_key"
+        android:title="@string/pref_units_label" />
 
     <CheckBoxPreference
-        android:title="@string/pref_enable_notifications_label"
+        android:defaultValue="@string/pref_enable_notifications_default"
         android:key="@string/pref_enable_notifications_key"
         android:summaryOff="@string/pref_enable_notifications_false"
         android:summaryOn="@string/pref_enable_notifications_true"
-        android:defaultValue="@string/pref_enable_notifications_default" />
+        android:title="@string/pref_enable_notifications_label" />
 
 </PreferenceScreen>

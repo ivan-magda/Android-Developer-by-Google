@@ -577,7 +577,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     private static void setLocationStatus(Context context, @LocationStatus int locationStatus) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(context.getString(R.string.pref_location_key), locationStatus);
+        editor.putInt(context.getString(R.string.pref_location_status_key), locationStatus);
         editor.commit();
     }
 }
