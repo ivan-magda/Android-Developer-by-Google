@@ -23,6 +23,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.format.Time;
 
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +35,13 @@ public class Utility {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    @SuppressWarnings("ResourceType")
+    public static @SunshineSyncAdapter.LocationStatus int getLocationStatus(final Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getInt(context.getString(R.string.pref_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
     }
 
     public static String getPreferredLocation(Context context) {
