@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
      Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,38 +14,39 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res/com.example.android.sunshine.app"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.example.android.sunshine.app.LocationEditTextPreference
+        android:title="@string/pref_location_label"
+        android:key="@string/pref_location_key"
         android:defaultValue="@string/pref_location_default"
         android:inputType="text"
-        android:key="@string/pref_location_key"
         android:singleLine="true"
-        android:title="@string/pref_location_label"
-        custom:minLength="3" />
+        custom:minLength="3"/>
 
     <ListPreference
-        android:defaultValue="@string/pref_units_metric"
-        android:entries="@array/pref_units_options"
-        android:entryValues="@array/pref_units_values"
+        android:title="@string/pref_units_label"
         android:key="@string/pref_units_key"
-        android:title="@string/pref_units_label" />
+        android:defaultValue="@string/pref_units_metric"
+        android:entryValues="@array/pref_units_values"
+        android:entries="@array/pref_units_options" />
 
     <ListPreference
-        android:defaultValue="@string/pref_art_pack_sunshine"
-        android:entries="@array/pref_art_pack_options"
-        android:entryValues="@array/pref_art_pack_values"
+        android:title="@string/pref_art_pack_label"
         android:key="@string/pref_art_pack_key"
-        android:title="@string/pref_art_pack_label" />
+        android:defaultValue="@string/pref_art_pack_sunshine"
+        android:entryValues="@array/pref_art_pack_values"
+        android:entries="@array/pref_art_pack_options" />
 
     <CheckBoxPreference
-        android:defaultValue="@string/pref_enable_notifications_default"
+        android:title="@string/pref_enable_notifications_label"
         android:key="@string/pref_enable_notifications_key"
         android:summaryOff="@string/pref_enable_notifications_false"
         android:summaryOn="@string/pref_enable_notifications_true"
-        android:title="@string/pref_enable_notifications_label" />
+        android:defaultValue="@string/pref_enable_notifications_default" />
 
 </PreferenceScreen>
