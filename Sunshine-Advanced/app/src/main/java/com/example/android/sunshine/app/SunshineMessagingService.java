@@ -32,6 +32,7 @@ public class SunshineMessagingService extends FirebaseMessagingService {
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.art_storm);
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setColor(getColor(R.color.primary_light))
                 .setSmallIcon(R.drawable.art_clear)
                 .setLargeIcon(largeIcon)
                 .setContentTitle("Weather Alert!")
