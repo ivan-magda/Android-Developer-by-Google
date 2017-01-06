@@ -29,7 +29,6 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/a11_sunshine_logo"
             android:scaleType="center"
             android:src="@drawable/ic_logo" />
     </android.support.v7.widget.Toolbar>
