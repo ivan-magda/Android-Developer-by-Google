@@ -33,6 +33,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBnZaGkXhLpvm_dyb8Gh_NUMHY6aDt5keo" />
+
         <service android:name=".SunshineMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
