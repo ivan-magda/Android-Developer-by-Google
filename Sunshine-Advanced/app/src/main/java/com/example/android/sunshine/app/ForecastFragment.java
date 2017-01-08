@@ -48,14 +48,16 @@ import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link android.support.v7.widget.RecyclerView} layout.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
+
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ForecastAdapter mForecastAdapter;
 
     private RecyclerView mRecyclerView;
-    private int mPosition = RecyclerView.NO_POSITION;
     private boolean mUseTodayLayout;
     private boolean mHoldForTransition;
+    private long mInitialSelectedDate = -1;
 
     private static final String SELECTED_KEY = "selected_position";
 
@@ -185,7 +187,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                                 locationSetting, date),
                                 vh
                         );
-                mPosition = vh.getAdapterPosition();
             }
         }, emptyView);
 
@@ -211,17 +212,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                     }
                 });
             }
-        }
-
-        // If there's instance state, mine it for useful information.
-        // The end-goal here is that the user never knows that turning their device sideways
-        // does crazy lifecycle related things.  It should feel like some stuff stretched out,
-        // or magically appeared to take advantage of room, but data or place in the app was never
-        // actually *lost*.
-        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
-            // The Recycler View probably hasn't even been populated yet.  Actually perform the
-            // swapout in onLoadFinished.
-            mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
 
         mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
@@ -281,12 +271,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // When tablets rotate, the currently selected list item needs to be saved.
-        // When no item is selected, mPosition will be set to RecyclerView.NO_POSITION,
-        // so check for that before storing.
-        if (mPosition != RecyclerView.NO_POSITION) {
-            outState.putInt(SELECTED_KEY, mPosition);
-        }
         super.onSaveInstanceState(outState);
     }
 
@@ -316,11 +300,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mForecastAdapter.swapCursor(data);
-        if (mPosition != RecyclerView.NO_POSITION) {
-            // If we don't need to restart the loader, and there's a desired position to restore
-            // to, do so now.
-            mRecyclerView.smoothScrollToPosition(mPosition);
-        }
         updateEmptyView();
         if (data.getCount() == 0) {
             getActivity().supportStartPostponedEnterTransition();
@@ -391,6 +370,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if (key.equals(getString(R.string.pref_location_status_key))) {
             updateEmptyView();
         }
+    }
+
+    public void setInitialSelectedDate(long initialSelectedDate) {
+        mInitialSelectedDate = initialSelectedDate;
     }
 
 }
