@@ -54,7 +54,7 @@
             android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
             >
 
-            <android.support.v7.widget.Space
+            <android.support.v4.widget.Space
                 app:layout_columnSpan="2"
                 app:layout_rowWeight="1" />
 
@@ -123,7 +123,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 />
 
-            <android.support.v7.widget.Space
+            <android.support.v4.widget.Space
                 app:layout_columnSpan="2"
                 app:layout_rowWeight="1" />
 
