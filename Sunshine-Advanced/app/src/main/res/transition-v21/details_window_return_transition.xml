@@ -11,7 +11,7 @@
      limitations under the License.
  -->
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="500"
+    android:duration="250"
     android:transitionOrdering="together">
     <fade>
         <targets>

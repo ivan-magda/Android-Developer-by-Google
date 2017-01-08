@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -10,12 +10,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_forecast"
-    android:name="com.example.android.sunshine.app.ForecastFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:sharedElementTransitions="true"
-    tools:layout="@android:layout/list_content" />
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="250"
+    android:transitionOrdering="together">
+    <fade>
+        <targets>
+            <target android:excludeId="@android:id/statusBarBackground" />
+            <target android:excludeId="@android:id/navigationBarBackground" />
+        </targets>
+    </fade>
+    <slide android:slideEdge="right">
+        <targets>
+            <target android:targetId="@id/detail_additional_pane" />
+        </targets>
+    </slide>
+</transitionSet>
