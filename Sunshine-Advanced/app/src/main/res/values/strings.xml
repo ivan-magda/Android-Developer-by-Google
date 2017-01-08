@@ -140,6 +140,9 @@
     <string name="title_widget_today">Sunshine Today</string>
     <string name="title_widget_detail">Sunshine Details</string>
 
+    <!-- Strings related to Muzei Source -->
+    <string name="muzei_description">Today\'s weather</string>
+
     <!-- Notification Format -->
     <string name="format_notification">Forecast: <xliff:g id="condition">%1$s</xliff:g> High: <xliff:g id="high">%2$s</xliff:g> Low: <xliff:g id="low">%3$s</xliff:g></string>
 

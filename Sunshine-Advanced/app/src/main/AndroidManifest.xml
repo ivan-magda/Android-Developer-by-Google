@@ -115,6 +115,20 @@
                 android:resource="@xml/widget_info_today" />
         </receiver>
 
+        <!-- Muzei Extension -->
+        <service
+            android:name=".muzei.WeatherMuzeiSource"
+            android:description="@string/muzei_description"
+            android:icon="@drawable/ic_muzei"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="com.google.android.apps.muzei.api.MuzeiArtSource" />
+            </intent-filter>
+            <meta-data
+                android:name="color"
+                android:value="@color/primary" />
+        </service>
+
         <service android:name=".widget.TodayWidgetIntentService" />
 
         <receiver
