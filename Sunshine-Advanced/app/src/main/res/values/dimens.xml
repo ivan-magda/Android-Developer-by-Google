@@ -32,7 +32,7 @@
 
     <!-- This is an odd width, but we're trying to match the font closely to keep things working
          on devices that don't yet have Roboto -->
-    <dimen name="forecast_text_width">49dp</dimen>
+    <dimen name="forecast_text_width">59dp</dimen>
     <dimen name="forecast_temperature_space">8dp</dimen>
 
     <!-- Extra Padding -->
