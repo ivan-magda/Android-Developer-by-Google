@@ -17,3 +17,12 @@ allprojects {
         jcenter()
     }
 }
+
+project(':backend') {
+    task startupAndTest {
+        description '\n1. Launches the GCE local development server.\n2. Runs all tests.\n3. Shuts the server down again.'
+        dependsOn "appengineRun"
+        dependsOn "test"
+        dependsOn "appengineStop"
+    }
+}

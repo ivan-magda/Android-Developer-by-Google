@@ -3,8 +3,9 @@
 <head>
     <title>Hello, Endpoints!</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+    <link rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 <body role="document" style="padding-top: 70px;">
@@ -16,15 +17,21 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b
+                            class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="https://developers.google.com/appengine/docs/java/">Google App Engine</a></li>
-                        <li><a href="https://developers.google.com/appengine/docs/java/endpoints/">Google Cloud Endpoints</a></li>
-                        <li><a href="https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints">Connecting your Android application to this backend</a></li>
+                        <li><a href="https://developers.google.com/appengine/docs/java/">Google App
+                            Engine</a></li>
+                        <li><a href="https://developers.google.com/appengine/docs/java/endpoints/">Google
+                            Cloud Endpoints</a></li>
+                        <li>
+                            <a href="https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints">Connecting
+                                your Android application to this backend</a></li>
                     </ul>
                 </li>
                 <li><a href="/_ah/api/explorer">Google Cloud Endpoints API Explorer</a></li>
-                <li><a href="https://console.developers.google.com">Google Developers Console</a></li>
+                <li><a href="https://console.developers.google.com">Google Developers Console</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -44,22 +51,35 @@
         <div class="row">
             <div class="col-lg-12">
                 <h1>Hello, Endpoints!</h1>
-                <p>Enter your name and press the button below to call your Google Cloud Endpoints API.</p>
+                <p>Enter your name and press the button below to call your Google Cloud Endpoints
+                    API.</p>
                 <form>
                     <div class="input-group">
-                        <input type="text" class="form-control input-lg" placeholder="Name" id="nameInput" />
+                        <input type="text" class="form-control input-lg" placeholder="Name"
+                               id="nameInput"/>
                           <span class="input-group-btn">
-                             <button class="btn btn-default btn-primary btn-group btn-lg" type="submit" id="helloButton">Say "Hello" &raquo;</button>
+                             <button class="btn btn-default btn-primary btn-group btn-lg"
+                                     type="submit" id="helloButton">Say "Hello" &raquo;</button>
                           </span>
                     </div>
                 </form>
                 <br/>
-                <p>If you need step-by-step instructions for connecting your Android application to this backend module, see <a href="https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints">"App Engine Java Endpoints Module" template documentation</a>.</p>
-                <p><small>
-                    For more information about Google App Engine for Java, check out the <a href="https://developers.google.com/appengine/docs/java/">App Engine documentation</a>.<br />
-                    To learn more about Google Cloud Endpoints, see <a href="https://developers.google.com/appengine/docs/java/endpoints/">Cloud Endpoints documentation</a>.<br/>
-                    If you'd like to access your generated Google Cloud Endpoints APIs directly, see the <a href="/_ah/api/explorer">Cloud Endpoints API Explorer</a>.
-                </small></p>
+                <p>If you need step-by-step instructions for connecting your Android application to
+                    this backend module, see <a
+                            href="https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints">"App
+                        Engine Java Endpoints Module" template documentation</a>.</p>
+                <p>
+                    <small>
+                        For more information about Google App Engine for Java, check out the <a
+                            href="https://developers.google.com/appengine/docs/java/">App Engine
+                        documentation</a>.<br/>
+                        To learn more about Google Cloud Endpoints, see <a
+                            href="https://developers.google.com/appengine/docs/java/endpoints/">Cloud
+                        Endpoints documentation</a>.<br/>
+                        If you'd like to access your generated Google Cloud Endpoints APIs directly,
+                        see the <a href="/_ah/api/explorer">Cloud Endpoints API Explorer</a>.
+                    </small>
+                </p>
             </div>
         </div>
     </div>
@@ -104,6 +124,7 @@
       }
       gapi.client.load(apiName, apiVersion, callback, apiRoot);
     }
+
 </script>
 <!--
  Load the Google APIs Client Library for JavaScript
