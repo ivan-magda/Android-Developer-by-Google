@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivityFragment">
+    tools:context=".ui.MainActivityFragment">
 
     <TextView
         android:id="@+id/instructions_text_view"
@@ -21,6 +21,29 @@
         android:layout_below="@+id/instructions_text_view"
         android:onClick="tellJoke"
         android:text="@string/button_text" />
+
+    <LinearLayout
+        android:id="@+id/loading_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/padding_small" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/tv_load_message" />
+    </LinearLayout>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
