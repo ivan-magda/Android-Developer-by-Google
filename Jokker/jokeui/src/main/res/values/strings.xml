@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">JokeUI</string>
+    <string name="joke_empty_message">I do not know any joke</string>
+</resources>
