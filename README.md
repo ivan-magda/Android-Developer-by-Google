@@ -14,6 +14,7 @@ The skills you learn in this Nanodegree program will help you master the existin
 1. [Developing Android Apps, Stage 1](#developing-android-apps-stage-1)
 2. [Developing Android Apps, Stage 2](#developing-android-apps-stage-2)
 3. [Advanced Android App Development](#advanced-android-app-development)
+4. [Gradle for Android and Java](#gradle-for-android-and-java)
 
 ## Developing Android Apps, Stage 1
 ListViews, Activities, Intents, Content Providers
@@ -84,3 +85,18 @@ Productionize an app, taking them from a functional state to a production-ready 
 **Toy apps**:
 
 - [Sunshine](../master/Sunshine) is a weather forecast app
+
+## Gradle for Android and Java
+Gradle, Compile and Package apps, Build Process, Build Automation, Continuous Delivery of Software
+
+- Explore how the Gradle build tool compiles and packages apps
+- Learn about how to customize the build process
+- Build automation, and continuous delivery of software
+- Free and paid flavors
+- Create and integrate Android libraries
+- Android app testing
+
+**Project** [Build it Bigger](../master/Build-it-Bigger)
+
+Use Gradle to build a joke-telling app, factoring functionality into libraries and flavors to keep the build simple.
+Configure a Google Cloud Endpoints development server to supply the jokes.
