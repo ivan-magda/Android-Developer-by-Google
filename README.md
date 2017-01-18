@@ -13,6 +13,7 @@ The skills you learn in this Nanodegree program will help you master the existin
 
 1. [Developing Android Apps, Stage 1](#developing-android-apps-stage-1)
 2. [Developing Android Apps, Stage 2](#developing-android-apps-stage-2)
+3. [Advanced Android App Development](#advanced-android-app-development)
 
 ## Developing Android Apps, Stage 1
 ListViews, Activities, Intents, Content Providers
@@ -62,3 +63,24 @@ Add onto Popular Movies Stage 1 project a detail view for each movie, allowing u
 - [BoardingPass](../master/BoardingPass) - learn ConstraintLayour
 - [VisualPolish](../master/VisualPolish) - create responsive user interfaces 
 - [Sunshine](../master/Sunshine) - weather forecast app, that demonstrates every covered aspect in the course
+
+## Advanced Android App Development
+Handle Error Cases, Accessibility and Localization, 3rd Party Libraries, Google Cloud Messaging, Material Design, Google Places API, Tablet UI, Performance Profiling
+
+- Understand the process of productionizing an app, using Sunshine the weather app
+- Android Core App Quality Guidelines
+- Material design approaches
+- Image-handling
+- Performance profiling
+- Accessibility features
+- Localization
+- Widgets
+- Libraries
+
+**Project**: [Stock Hawk](https://github.com/vanyaland/StockHawk)
+
+Productionize an app, taking them from a functional state to a production-ready state. Find and handle error cases, add accessibility features, allow for localization, add widgets, and add a library.
+
+**Toy apps**:
+
+- [Sunshine](../master/Sunshine) is a weather forecast app
