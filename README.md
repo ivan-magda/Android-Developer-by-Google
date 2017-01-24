@@ -15,6 +15,7 @@ The skills you learn in this Nanodegree program will help you master the existin
 2. [Developing Android Apps, Stage 2](#developing-android-apps-stage-2)
 3. [Advanced Android App Development](#advanced-android-app-development)
 4. [Gradle for Android and Java](#gradle-for-android-and-java)
+5. [Material Design for Android Developers](#material-design-for-android-developers)
 
 ## Developing Android Apps, Stage 1
 ListViews, Activities, Intents, Content Providers
@@ -100,3 +101,15 @@ Gradle, Compile and Package apps, Build Process, Build Automation, Continuous De
 
 Use Gradle to build a joke-telling app, factoring functionality into libraries and flavors to keep the build simple.
 Configure a Google Cloud Endpoints development server to supply the jokes.
+
+## Material Design for Android Developers
+Android Design Fundamentals, Surfaces, Bold Graphic Design, Motion, Adaptive Design
+
+- Learn how to apply the material design principles
+- Android design fundamentals
+- Transform design elements of sample apps to mmet Android design consepts
+- Understand of how to create and use material design elements, surfaces, transitions and graphics in apps, across multiple form factors
+
+**Project** [XYZReader](https://github.com/vanyaland/XYZReader)
+
+Implement Android design concepts and transform a functional newsreader app using material design techniques.
