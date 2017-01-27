@@ -32,5 +32,7 @@ limitations under the License.
         advantage of the expanded notification format in newer versions of Android, and
         falls back gracefully to a reduced set of functionality on earlier versions.
     </string>
+    <string name="conversation_message">Hi there, how are you?</string>
+    <string name="conversation_name">Ivan Magda</string>
 
 </resources>

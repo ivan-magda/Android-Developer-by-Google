@@ -1,13 +1,14 @@
 package com.example.android.basicnotifications;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 import android.view.View;
 
 /**
@@ -87,13 +88,53 @@ public class MainActivity extends Activity {
 
         // END_INCLUDE (build_notification)
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR1) {
+            Intent messageHeardIntent = new Intent()
+                    .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                    .setAction(MyMessageHeardReceiver.ACTION)
+                    .putExtra(Extra.CONVERSATION_ID_KEY, Extra.CONVERSATION_ID_VALUE);
+            PendingIntent messageHeardPendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(),
+                    Extra.CONVERSATION_ID_VALUE,
+                    messageHeardIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+            Intent messageReplyIntent = new Intent()
+                    .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                    .setAction(MyMessageReplyReceiver.ACTION)
+                    .putExtra(Extra.CONVERSATION_ID_KEY, Extra.CONVERSATION_ID_VALUE);
+            PendingIntent messageReplyPendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(),
+                    Extra.CONVERSATION_ID_VALUE,
+                    messageReplyIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+            RemoteInput remoteInput = new RemoteInput.Builder(Extra.VOICE_REPLY_KEY)
+                    .setLabel("Prompt text")
+                    .build();
+
+            final String conversationName = getString(R.string.conversation_name);
+            NotificationCompat.CarExtender.UnreadConversation.Builder unreadConversationBuilder =
+                    new NotificationCompat.CarExtender.UnreadConversation.Builder(conversationName)
+                            .setReadPendingIntent(messageHeardPendingIntent)
+                            .setReplyAction(messageReplyPendingIntent, remoteInput);
+
+            unreadConversationBuilder.addMessage(getString(R.string.conversation_message))
+                    .setLatestTimestamp(System.currentTimeMillis());
+
+            builder.extend(new NotificationCompat.CarExtender()
+                    .setUnreadConversation(unreadConversationBuilder.build()));
+        }
+
         // BEGIN_INCLUDE(send_notification)
         /**
          * Send the notification. This will immediately display the notification icon in the
          * notification bar.
          */
-        NotificationManager notificationManager = (NotificationManager) getSystemService(
-                NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
         notificationManager.notify(NOTIFICATION_ID, builder.build());
         // END_INCLUDE(send_notification)
     }
