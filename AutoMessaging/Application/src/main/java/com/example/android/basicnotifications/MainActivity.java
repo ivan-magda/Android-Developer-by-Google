@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
 
-            RemoteInput remoteInput = new RemoteInput.Builder(Extra.VOICE_REPLY_KEY)
+            RemoteInput remoteInput = new RemoteInput.Builder(Extra.MESSAGE_VOICE_REPLY_KEY)
                     .setLabel("Prompt text")
                     .build();
 
