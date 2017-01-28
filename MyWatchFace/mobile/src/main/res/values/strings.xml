@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyWatchFace</string>
+    <string name="pick_background_colour">Pick background colour</string>
+    <string name="pick_date_time_colour">Pick date and time colour</string>
+    <string name="background_colour">Background colour</string>
+    <string name="date_and_time_colour">Date and time colour</string>
+</resources>
