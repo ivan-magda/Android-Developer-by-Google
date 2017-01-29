@@ -2,6 +2,8 @@ package com.ivanmagda.sunshine.wear;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,8 +13,10 @@ import android.support.annotation.NonNull;
 
 import com.ivanmagda.sunshine.shared.SunshineColorUtils;
 import com.ivanmagda.sunshine.shared.SunshineDateFormatUtils;
+import com.ivanmagda.sunshine.shared.SunshineTemperatureUtils;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 public final class SunshineWatchFace {
@@ -27,24 +31,26 @@ public final class SunshineWatchFace {
     private final Paint mDatePaint;
     private final Paint mCenterDividerPaint;
     private final Paint mBackgroundPaint;
+    private final Paint mHighTempPaint;
+    private final Paint mLowTempPaint;
+    private final Paint mIconPaint = new Paint();
 
     private Calendar mCalendar;
     private boolean mShouldShowSeconds = true;
+    private boolean mIsInAmbientMode = false;
 
     public static SunshineWatchFace newInstance(@NonNull final Context context) {
         Resources resources = context.getResources();
 
-        Paint timePaint = new Paint();
-        timePaint.setColor(TEXT_PRIMARY_COLOR);
-        timePaint.setTypeface(NORMAL_TYPEFACE);
-        timePaint.setTextSize(resources.getDimension(R.dimen.time_size));
-        timePaint.setAntiAlias(true);
+        Paint timePaint = createTextPaint(TEXT_PRIMARY_COLOR,
+                resources.getDimension(R.dimen.time_size));
+        Paint datePaint = createTextPaint(SunshineColorUtils.getPrimaryLightColor(context),
+                resources.getDimension(R.dimen.date_size));
 
-        Paint datePaint = new Paint();
-        datePaint.setColor(SunshineColorUtils.getPrimaryLightColor(context));
-        datePaint.setTypeface(NORMAL_TYPEFACE);
-        datePaint.setTextSize(context.getResources().getDimension(R.dimen.date_size));
-        datePaint.setAntiAlias(true);
+        Paint highTempPaint = createTextPaint(TEXT_PRIMARY_COLOR,
+                resources.getDimension(R.dimen.temp_text_size));
+        Paint lowTempPaint = createTextPaint(SunshineColorUtils.getPrimaryLightColor(context),
+                resources.getDimension(R.dimen.temp_text_size));
 
         Paint linePaint = new Paint();
         linePaint.setColor(SunshineColorUtils.getPrimaryLightColor(context));
@@ -55,36 +61,78 @@ public final class SunshineWatchFace {
         backgroundPaint.setColor(SunshineColorUtils.getPrimaryColor(context));
 
         return new SunshineWatchFace(context, timePaint, datePaint, linePaint, backgroundPaint,
-                Calendar.getInstance());
+                highTempPaint, lowTempPaint, Calendar.getInstance());
     }
 
-    private SunshineWatchFace(Context context, Paint timePaint, Paint datePaint,
-                              Paint centerDividerPaint, Paint backgroundPaint, Calendar calendar) {
+    private static Paint createTextPaint(int colorId, float textSize) {
+        Paint paint = new Paint();
+        paint.setColor(colorId);
+        paint.setTypeface(NORMAL_TYPEFACE);
+        paint.setTextSize(textSize);
+        paint.setAntiAlias(true);
+
+        return paint;
+    }
+
+    private SunshineWatchFace(@NonNull final Context context, Paint timePaint, Paint datePaint,
+                              Paint centerDividerPaint, Paint backgroundPaint, Paint highTempPaint,
+                              Paint lowTempPaint, Calendar calendar) {
         this.mContext = context;
         this.mTimePaint = timePaint;
         this.mDatePaint = datePaint;
         this.mBackgroundPaint = backgroundPaint;
         this.mCenterDividerPaint = centerDividerPaint;
+        this.mHighTempPaint = highTempPaint;
+        this.mLowTempPaint = lowTempPaint;
         this.mCalendar = calendar;
+        this.mIconPaint.setAntiAlias(true);
     }
 
     public void draw(Canvas canvas, Rect bounds) {
-        long now = System.currentTimeMillis();
-        mCalendar.setTimeInMillis(now);
+        mCalendar.setTimeInMillis(System.currentTimeMillis());
+        Date now = mCalendar.getTime();
 
         canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
         drawCenterDivider(canvas, bounds);
 
+        final Resources resources = mContext.getResources();
+
+        final float DIVIDER_MARGIN = resources.getDimension(R.dimen.margin_divider);
+        final float TEXT_MARGIN = resources.getDimension(R.dimen.margin_text);
+        final float CENTER_Y = bounds.exactCenterY();
+
         String dateText = SunshineDateFormatUtils.dateStringFrom(now).toUpperCase();
         float dateXOffset = computeXOffset(dateText, mDatePaint, bounds);
-        float dateYOffset = computeDateYOffset(dateText, mDatePaint, bounds);
+        float dateYOffset = CENTER_Y - DIVIDER_MARGIN;
         canvas.drawText(dateText, dateXOffset, dateYOffset, mDatePaint);
 
         String timeText = SunshineDateFormatUtils.timeStringFrom(now, mShouldShowSeconds);
-        float timeBounds = computeTimeBounds(timeText, mTimePaint);
+        float timeHeight = computeTextBounds(timeText, mTimePaint).height();
         float timeXOffset = computeXOffset(timeText, mTimePaint, bounds);
-        float timeYOffset = dateYOffset - (timeBounds / 2.0f) - 8.0f;
+        float timeYOffset = dateYOffset - (timeHeight / 2.0f)
+                - resources.getDimension(R.dimen.margin_date_and_time);
         canvas.drawText(timeText, timeXOffset, timeYOffset, mTimePaint);
+
+        String highTempText = SunshineTemperatureUtils.formatTemperature(mContext, 25.0, true);
+        Rect highTempBounds = computeTextBounds(highTempText, mHighTempPaint);
+
+        float tempYOffset = CENTER_Y + highTempBounds.height() + DIVIDER_MARGIN;
+
+        float highTempXOffset = computeXOffset(highTempText, mHighTempPaint, bounds);
+        canvas.drawText(highTempText, highTempXOffset, tempYOffset, mHighTempPaint);
+
+        String lowTempText = SunshineTemperatureUtils.formatTemperature(mContext, 16.0, true);
+        float lowTempXOffset = computeXOffset(lowTempText, mLowTempPaint, bounds) +
+                highTempBounds.width() + TEXT_MARGIN;
+        canvas.drawText(lowTempText, lowTempXOffset, tempYOffset, mLowTempPaint);
+
+        if (!mIsInAmbientMode) {
+            final float iconWidth = resources.getDimension(R.dimen.icon_width);
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_clear);
+            int left = Math.round(highTempXOffset - (TEXT_MARGIN * 2) - (iconWidth / 2.0f));
+            int top = Math.round(tempYOffset - (iconWidth / 2.0f));
+            canvas.drawBitmap(bitmap, left, top, new Paint());
+        }
     }
 
     private void drawCenterDivider(Canvas canvas, Rect watchBounds) {
@@ -105,22 +153,14 @@ public final class SunshineWatchFace {
 
     private float computeXOffset(String text, Paint paint, Rect watchBounds) {
         float centerX = watchBounds.exactCenterX();
-        float timeLength = paint.measureText(text);
-        return centerX - (timeLength / 2.0f);
+        float measureText = paint.measureText(text);
+        return centerX - (measureText / 2.0f);
     }
 
-    private float computeTimeBounds(String timeText, Paint timePaint) {
+    private Rect computeTextBounds(String text, Paint paint) {
         Rect textBounds = new Rect();
-        timePaint.getTextBounds(timeText, 0, timeText.length(), textBounds);
-        return textBounds.height();
-    }
-
-    private float computeDateYOffset(String dateText, Paint datePaint, Rect watchBounds) {
-        float centerY = watchBounds.exactCenterY();
-        Rect textBounds = new Rect();
-        datePaint.getTextBounds(dateText, 0, dateText.length(), textBounds);
-        int textHeight = textBounds.height();
-        return centerY - (textHeight / 2.0f) - 10.0f;
+        paint.getTextBounds(text, 0, text.length(), textBounds);
+        return textBounds;
     }
 
     public void setTimeZone(TimeZone timeZone) {
@@ -130,6 +170,10 @@ public final class SunshineWatchFace {
     public void setAntiAlias(boolean antiAlias) {
         mTimePaint.setAntiAlias(antiAlias);
         mDatePaint.setAntiAlias(antiAlias);
+        mCenterDividerPaint.setAntiAlias(antiAlias);
+        mHighTempPaint.setAntiAlias(antiAlias);
+        mLowTempPaint.setAntiAlias(antiAlias);
+        mIconPaint.setAntiAlias(antiAlias);
     }
 
     public void setShowSeconds(boolean showSeconds) {
@@ -137,17 +181,22 @@ public final class SunshineWatchFace {
     }
 
     public void setInAmbientMode(boolean inAmbientMode) {
-        if (inAmbientMode) {
+        mIsInAmbientMode = inAmbientMode;
+        if (mIsInAmbientMode) {
             mBackgroundPaint.setColor(Color.BLACK);
             mTimePaint.setColor(Color.WHITE);
             mDatePaint.setColor(Color.WHITE);
             mCenterDividerPaint.setColor(Color.WHITE);
+            mHighTempPaint.setColor(Color.WHITE);
+            mLowTempPaint.setColor(Color.WHITE);
         } else {
             final int textSecondaryColor = SunshineColorUtils.getPrimaryLightColor(mContext);
             mBackgroundPaint.setColor(SunshineColorUtils.getPrimaryColor(mContext));
             mTimePaint.setColor(TEXT_PRIMARY_COLOR);
             mDatePaint.setColor(textSecondaryColor);
             mCenterDividerPaint.setColor(textSecondaryColor);
+            mHighTempPaint.setColor(TEXT_PRIMARY_COLOR);
+            mLowTempPaint.setColor(textSecondaryColor);
         }
     }
 

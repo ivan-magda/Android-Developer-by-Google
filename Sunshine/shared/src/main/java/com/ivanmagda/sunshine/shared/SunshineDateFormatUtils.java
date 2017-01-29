@@ -1,7 +1,7 @@
 package com.ivanmagda.sunshine.shared;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public final class SunshineDateFormatUtils {
