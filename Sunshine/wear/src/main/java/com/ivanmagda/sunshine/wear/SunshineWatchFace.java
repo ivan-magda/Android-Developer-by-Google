@@ -1,302 +1,127 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ivanmagda.sunshine.wear;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.wearable.watchface.CanvasWatchFaceService;
-import android.support.wearable.watchface.WatchFaceStyle;
-import android.view.SurfaceHolder;
-import android.view.WindowInsets;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
 
-import java.lang.ref.WeakReference;
+import com.ivanmagda.sunshine.shared.SunshineDateFormatUtils;
+
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
-/**
- * Digital watch face with seconds. In ambient mode, the seconds aren't displayed. On devices with
- * low-bit ambient mode, the text is drawn without anti-aliasing in ambient mode.
- */
-public class SunshineWatchFace extends CanvasWatchFaceService {
+public final class SunshineWatchFace {
 
     private static final Typeface NORMAL_TYPEFACE =
             Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
 
-    /**
-     * Update rate in milliseconds for interactive mode. We update once a second since seconds are
-     * displayed in interactive mode.
-     */
-    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
+    private static final String TIME_FORMAT_WITHOUT_SECONDS = "%02d:%02d";
+    private static final String TIME_FORMAT_WITH_SECONDS = TIME_FORMAT_WITHOUT_SECONDS + ":%02d";
 
-    /**
-     * Handler message id for updating the time periodically in interactive mode.
-     */
-    private static final int MSG_UPDATE_TIME = 0;
+    private static final int BACKGROUND_DEFAULT_COLOR = Color.parseColor("#03A9F4");
+    private static final int TEXT_PRIMARY_COLOR = Color.WHITE;
+    private static final int TEXT_SECONDARY_COLOR = Color.parseColor("#BBE5FB");
 
-    @Override
-    public Engine onCreateEngine() {
-        return new Engine();
+    private final Paint mTimePaint;
+    private final Paint mDatePaint;
+    private final Paint mBackgroundPaint;
+
+    private Calendar mCalendar;
+    private boolean shouldShowSeconds = true;
+
+    public static SunshineWatchFace newInstance(@NonNull final Context context) {
+        Paint timePaint = new Paint();
+        timePaint.setColor(TEXT_PRIMARY_COLOR);
+        timePaint.setTypeface(NORMAL_TYPEFACE);
+        timePaint.setTextSize(context.getResources().getDimension(R.dimen.time_size));
+        timePaint.setAntiAlias(true);
+
+        Paint datePaint = new Paint();
+        datePaint.setColor(TEXT_SECONDARY_COLOR);
+        datePaint.setTextSize(context.getResources().getDimension(R.dimen.date_size));
+        datePaint.setTypeface(NORMAL_TYPEFACE);
+        datePaint.setAntiAlias(true);
+
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(BACKGROUND_DEFAULT_COLOR);
+
+        return new SunshineWatchFace(timePaint, datePaint, backgroundPaint, Calendar.getInstance());
     }
 
-    private static class EngineHandler extends Handler {
-        private final WeakReference<SunshineWatchFace.Engine> mWeakReference;
+    private SunshineWatchFace(Paint timePaint, Paint datePaint, Paint backgroundPaint, Calendar calendar) {
+        this.mTimePaint = timePaint;
+        this.mDatePaint = datePaint;
+        this.mBackgroundPaint = backgroundPaint;
+        mCalendar = calendar;
+    }
 
-        public EngineHandler(SunshineWatchFace.Engine reference) {
-            mWeakReference = new WeakReference<>(reference);
-        }
+    public void draw(Canvas canvas, Rect bounds) {
+        long now = System.currentTimeMillis();
+        mCalendar.setTimeInMillis(now);
 
-        @Override
-        public void handleMessage(Message msg) {
-            SunshineWatchFace.Engine engine = mWeakReference.get();
-            if (engine != null) {
-                switch (msg.what) {
-                    case MSG_UPDATE_TIME:
-                        engine.handleUpdateTimeMessage();
-                        break;
-                }
-            }
+        canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
+
+        String timeText = String.format(shouldShowSeconds
+                        ? TIME_FORMAT_WITH_SECONDS : TIME_FORMAT_WITHOUT_SECONDS,
+                mCalendar.get(Calendar.HOUR),
+                mCalendar.get(Calendar.MINUTE),
+                mCalendar.get(Calendar.SECOND));
+        float timeXOffset = computeXOffset(timeText, mTimePaint, bounds);
+        float timeYOffset = computeTimeYOffset(timeText, mTimePaint, bounds);
+        canvas.drawText(timeText, timeXOffset, timeYOffset, mTimePaint);
+
+        String dateText = SunshineDateFormatUtils.dateStringFrom(now).toUpperCase();
+        float dateXOffset = computeXOffset(dateText, mDatePaint, bounds);
+        float dateYOffset = computeDateYOffset(dateText, mDatePaint);
+        canvas.drawText(dateText, dateXOffset, timeYOffset + dateYOffset, mDatePaint);
+    }
+
+    private float computeXOffset(String text, Paint paint, Rect watchBounds) {
+        float centerX = watchBounds.exactCenterX();
+        float timeLength = paint.measureText(text);
+        return centerX - (timeLength / 2.0f);
+    }
+
+    private float computeTimeYOffset(String timeText, Paint timePaint, Rect watchBounds) {
+        float centerY = watchBounds.exactCenterY();
+        Rect textBounds = new Rect();
+        timePaint.getTextBounds(timeText, 0, timeText.length(), textBounds);
+        int textHeight = textBounds.height();
+        return centerY + (textHeight / 2.0f);
+    }
+
+    private float computeDateYOffset(String dateText, Paint datePaint) {
+        Rect textBounds = new Rect();
+        datePaint.getTextBounds(dateText, 0, dateText.length(), textBounds);
+        return textBounds.height() + 10.0f;
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        mCalendar.setTimeZone(timeZone);
+    }
+
+    public void setAntiAlias(boolean antiAlias) {
+        mTimePaint.setAntiAlias(antiAlias);
+        mDatePaint.setAntiAlias(antiAlias);
+    }
+
+    public void setShowSeconds(boolean showSeconds) {
+        shouldShowSeconds = showSeconds;
+    }
+
+    public void setInAmbientMode(boolean inAmbientMode) {
+        if (inAmbientMode) {
+            mBackgroundPaint.setColor(Color.BLACK);
+            mTimePaint.setColor(Color.WHITE);
+            mDatePaint.setColor(Color.WHITE);
+        } else {
+            mBackgroundPaint.setColor(BACKGROUND_DEFAULT_COLOR);
+            mTimePaint.setColor(TEXT_PRIMARY_COLOR);
+            mDatePaint.setColor(TEXT_SECONDARY_COLOR);
         }
     }
 
-    private class Engine extends CanvasWatchFaceService.Engine {
-        final Handler mUpdateTimeHandler = new EngineHandler(this);
-        boolean mRegisteredTimeZoneReceiver = false;
-        Paint mBackgroundPaint;
-        Paint mTextPaint;
-        boolean mAmbient;
-        Calendar mCalendar;
-        final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mCalendar.setTimeZone(TimeZone.getDefault());
-                invalidate();
-            }
-        };
-        float mXOffset;
-        float mYOffset;
-
-        /**
-         * Whether the display supports fewer bits for each color in ambient mode. When true, we
-         * disable anti-aliasing in ambient mode.
-         */
-        boolean mLowBitAmbient;
-
-        @Override
-        public void onCreate(SurfaceHolder holder) {
-            super.onCreate(holder);
-
-            setWatchFaceStyle(new WatchFaceStyle.Builder(SunshineWatchFace.this)
-                    .setCardPeekMode(WatchFaceStyle.PEEK_MODE_VARIABLE)
-                    .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
-                    .setShowSystemUiTime(false)
-                    .setAcceptsTapEvents(true)
-                    .build());
-            Resources resources = SunshineWatchFace.this.getResources();
-            mYOffset = resources.getDimension(R.dimen.digital_y_offset);
-
-            mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(resources.getColor(R.color.background));
-
-            mTextPaint = new Paint();
-            mTextPaint = createTextPaint(resources.getColor(R.color.digital_text));
-
-            mCalendar = Calendar.getInstance();
-        }
-
-        @Override
-        public void onDestroy() {
-            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-            super.onDestroy();
-        }
-
-        private Paint createTextPaint(int textColor) {
-            Paint paint = new Paint();
-            paint.setColor(textColor);
-            paint.setTypeface(NORMAL_TYPEFACE);
-            paint.setAntiAlias(true);
-            return paint;
-        }
-
-        @Override
-        public void onVisibilityChanged(boolean visible) {
-            super.onVisibilityChanged(visible);
-
-            if (visible) {
-                registerReceiver();
-
-                // Update time zone in case it changed while we weren't visible.
-                mCalendar.setTimeZone(TimeZone.getDefault());
-                invalidate();
-            } else {
-                unregisterReceiver();
-            }
-
-            // Whether the timer should be running depends on whether we're visible (as well as
-            // whether we're in ambient mode), so we may need to start or stop the timer.
-            updateTimer();
-        }
-
-        private void registerReceiver() {
-            if (mRegisteredTimeZoneReceiver) {
-                return;
-            }
-            mRegisteredTimeZoneReceiver = true;
-            IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            SunshineWatchFace.this.registerReceiver(mTimeZoneReceiver, filter);
-        }
-
-        private void unregisterReceiver() {
-            if (!mRegisteredTimeZoneReceiver) {
-                return;
-            }
-            mRegisteredTimeZoneReceiver = false;
-            SunshineWatchFace.this.unregisterReceiver(mTimeZoneReceiver);
-        }
-
-        @Override
-        public void onApplyWindowInsets(WindowInsets insets) {
-            super.onApplyWindowInsets(insets);
-
-            // Load resources that have alternate values for round watches.
-            Resources resources = SunshineWatchFace.this.getResources();
-            boolean isRound = insets.isRound();
-            mXOffset = resources.getDimension(isRound
-                    ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-            float textSize = resources.getDimension(isRound
-                    ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-
-            mTextPaint.setTextSize(textSize);
-        }
-
-        @Override
-        public void onPropertiesChanged(Bundle properties) {
-            super.onPropertiesChanged(properties);
-            mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-        }
-
-        @Override
-        public void onTimeTick() {
-            super.onTimeTick();
-            invalidate();
-        }
-
-        @Override
-        public void onAmbientModeChanged(boolean inAmbientMode) {
-            super.onAmbientModeChanged(inAmbientMode);
-            if (mAmbient != inAmbientMode) {
-                mAmbient = inAmbientMode;
-                if (mLowBitAmbient) {
-                    mTextPaint.setAntiAlias(!inAmbientMode);
-                }
-                invalidate();
-            }
-
-            // Whether the timer should be running depends on whether we're visible (as well as
-            // whether we're in ambient mode), so we may need to start or stop the timer.
-            updateTimer();
-        }
-
-        /**
-         * Captures tap event (and tap type) and toggles the background color if the user finishes
-         * a tap.
-         */
-        @Override
-        public void onTapCommand(int tapType, int x, int y, long eventTime) {
-            switch (tapType) {
-                case TAP_TYPE_TOUCH:
-                    // The user has started touching the screen.
-                    break;
-                case TAP_TYPE_TOUCH_CANCEL:
-                    // The user has started a different gesture or otherwise cancelled the tap.
-                    break;
-                case TAP_TYPE_TAP:
-                    // The user has completed the tap gesture.
-                    // TODO: Add code to handle the tap gesture.
-                    Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT)
-                            .show();
-                    break;
-            }
-            invalidate();
-        }
-
-        @Override
-        public void onDraw(Canvas canvas, Rect bounds) {
-            // Draw the background.
-            if (isInAmbientMode()) {
-                canvas.drawColor(Color.BLACK);
-            } else {
-                canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
-            }
-
-            // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
-            long now = System.currentTimeMillis();
-            mCalendar.setTimeInMillis(now);
-
-            String text = mAmbient
-                    ? String.format("%d:%02d", mCalendar.get(Calendar.HOUR),
-                    mCalendar.get(Calendar.MINUTE))
-                    : String.format("%d:%02d:%02d", mCalendar.get(Calendar.HOUR),
-                    mCalendar.get(Calendar.MINUTE), mCalendar.get(Calendar.SECOND));
-            canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
-        }
-
-        /**
-         * Starts the {@link #mUpdateTimeHandler} timer if it should be running and isn't currently
-         * or stops it if it shouldn't be running but currently is.
-         */
-        private void updateTimer() {
-            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-            if (shouldTimerBeRunning()) {
-                mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
-            }
-        }
-
-        /**
-         * Returns whether the {@link #mUpdateTimeHandler} timer should be running. The timer should
-         * only run when we're visible and in interactive mode.
-         */
-        private boolean shouldTimerBeRunning() {
-            return isVisible() && !isInAmbientMode();
-        }
-
-        /**
-         * Handle updating the time periodically in interactive mode.
-         */
-        private void handleUpdateTimeMessage() {
-            invalidate();
-            if (shouldTimerBeRunning()) {
-                long timeMs = System.currentTimeMillis();
-                long delayMs = INTERACTIVE_UPDATE_RATE_MS
-                        - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
-                mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
-            }
-        }
-    }
 }
