@@ -29,6 +29,8 @@ dependencies {
     compile 'com.firebase:firebase-jobdispatcher:0.5.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 
+    compile project(':shared')
+
     // Instrumentation dependencies use androidTestCompile
     // (as opposed to testCompile for local unit tests run in the JVM)
     androidTestCompile 'junit:junit:4.12'
