@@ -4,9 +4,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+    enforceUniquePackageName = false
 
     defaultConfig {
-        applicationId "com.ivanmagda.sunshine.wear"
+        applicationId "com.ivanmagda.android.sunshine"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1

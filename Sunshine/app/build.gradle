@@ -2,10 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '25.0.2'
+    enforceUniquePackageName = false
 
     defaultConfig {
-        applicationId "com.example.android.sunshine"
+        applicationId "com.ivanmagda.android.sunshine"
         minSdkVersion 10
         targetSdkVersion 25
         versionCode 1
@@ -37,4 +38,5 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:25.1.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+    compile 'com.google.android.gms:play-services:10.0.1'
 }
