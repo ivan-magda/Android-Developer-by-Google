@@ -100,11 +100,13 @@ public final class SunshineWatchFace {
         final float TEXT_MARGIN = resources.getDimension(R.dimen.margin_text);
         final float CENTER_Y = bounds.exactCenterY();
 
+        // Draw date.
         String dateText = SunshineDateFormatUtils.dateStringFrom(now).toUpperCase();
         float dateXOffset = computeXOffset(dateText, mDatePaint, bounds);
         float dateYOffset = CENTER_Y - DIVIDER_MARGIN;
         canvas.drawText(dateText, dateXOffset, dateYOffset, mDatePaint);
 
+        // Draw time.
         String timeText = SunshineDateFormatUtils.timeStringFrom(now, mShouldShowSeconds);
         float timeHeight = computeTextBounds(timeText, mTimePaint).height();
         float timeXOffset = computeXOffset(timeText, mTimePaint, bounds);
@@ -112,6 +114,7 @@ public final class SunshineWatchFace {
                 - resources.getDimension(R.dimen.margin_date_and_time);
         canvas.drawText(timeText, timeXOffset, timeYOffset, mTimePaint);
 
+        // Draw high temp text.
         String highTempText = (mHighTemp == Double.MAX_VALUE ? "N/A"
                 : SunshineTemperatureUtils.formatTemperature(mContext, mHighTemp, true));
         Rect highTempBounds = computeTextBounds(highTempText, mHighTempPaint);
@@ -121,17 +124,25 @@ public final class SunshineWatchFace {
         float highTempXOffset = computeXOffset(highTempText, mHighTempPaint, bounds);
         canvas.drawText(highTempText, highTempXOffset, tempYOffset, mHighTempPaint);
 
+        // Draw low temp text.
         String lowTempText = (mLowTemp == Double.MAX_VALUE ? "N/A"
                 : SunshineTemperatureUtils.formatTemperature(mContext, mLowTemp, true));
         float lowTempXOffset = computeXOffset(lowTempText, mLowTempPaint, bounds) +
                 highTempBounds.width() + TEXT_MARGIN;
         canvas.drawText(lowTempText, lowTempXOffset, tempYOffset, mLowTempPaint);
 
+        // Draw forecast icon.
         if (!mIsInAmbientMode && mIconBitMap != null) {
-            final float iconWidth = resources.getDimension(R.dimen.icon_width);
-            int left = Math.round(highTempXOffset - (TEXT_MARGIN * 2) - (iconWidth / 2.0f));
-            int top = Math.round(tempYOffset - (iconWidth / 2.0f));
-            canvas.drawBitmap(mIconBitMap, left, top, new Paint());
+            final float iconWidth = (int) resources.getDimension(R.dimen.icon_width);
+            final float halfOfWidth = iconWidth / 2.0f;
+
+            Bitmap iconToDraw = (mIconBitMap.getWidth() <= iconWidth
+                    ? mIconBitMap
+                    : BitmapUtils.getResizedBitmap(mIconBitMap, (int) iconWidth, (int) iconWidth));
+
+            int left = Math.round(highTempXOffset - (TEXT_MARGIN * 2) - halfOfWidth);
+            int top = Math.round(tempYOffset - halfOfWidth);
+            canvas.drawBitmap(iconToDraw, left, top, new Paint());
         }
     }
 
