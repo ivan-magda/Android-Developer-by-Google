@@ -16,6 +16,7 @@ The skills you learn in this Nanodegree program will help you master the existin
 3. [Advanced Android App Development](#advanced-android-app-development)
 4. [Gradle for Android and Java](#gradle-for-android-and-java)
 5. [Material Design for Android Developers](#material-design-for-android-developers)
+6. [Android Wear Development](#android-wear-development)
 
 ## Developing Android Apps, Stage 1
 ListViews, Activities, Intents, Content Providers
@@ -113,3 +114,30 @@ Android Design Fundamentals, Surfaces, Bold Graphic Design, Motion, Adaptive Des
 **Project** [XYZReader](https://github.com/vanyaland/XYZReader)
 
 Implement Android design concepts and transform a functional newsreader app using material design techniques.
+
+## Android Wear Development
+Android Wear Development, Android TV and Google Cast Development, Android Auto Development
+
+- Android Wear application structure
+- Share information between the wearable and the companion phone or the cloud.
+- Design great user experiences for wearables including how to take advantage of the always-on display of Android Wear devices.
+
+**Project** [Sunshine-Advanced](../master/Sunshine-Advanced)
+
+Let users access the weather at a glance by building a Sunshine watch face for Android Wear.
+
+
+**Toy apps**:
+
+- [AndroidWearFirstProject](../master/AndroidWearFirstProject) is a Android Wear 'Hello World' project
+- [WearCounter](../master/WearCounter) example of sending and syncing data accross wear and mobile apps
+- [GridViewPager](../master/GridViewPager) GridViewPager sample project
+- [SynchronizedNotifications](../master/SynchronizedNotifications) notifications across Android Wear and phone app
+- [WatchFace](../master/WatchFace) demonstrate how to build watch faces for the Android Wear
+- [TVDemo](../master/TVDemo) Android TV sample project
+- [ControllerSample](../master/ControllerSample) Android TV asteroids game
+- [AutoMessaging](../master/AutoMessaging) Android Auto Messaging demo project
+- [MessagingService](../master/MessagingService) MessagingService demo project
+- [MinimalAutoMedia](../master/MinimalAutoMedia) a very complete sample of the Android Auto media player
+- [UniversalMusicPlayer](../master/UniversalMusicPlayer) an audio media app that works across multiple form factors and provide a consistent user experience on Android phones, tablets, Android Auto, Android Wear, Android TV and Android Cast devices
+- [MyWatchFace](../master/MyWatchFace) a digital watch face for Android wear powered smartwatch, also control the background colour and the time and date colours of watchface from inside the Android Wear application on mobile device
