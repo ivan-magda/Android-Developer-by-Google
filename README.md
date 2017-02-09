@@ -17,6 +17,22 @@ The skills you learn in this Nanodegree program will help you master the existin
 4. [Gradle for Android and Java](#gradle-for-android-and-java)
 5. [Material Design for Android Developers](#material-design-for-android-developers)
 6. [Android Wear Development](#android-wear-development)
+7. [Capstone](#capstone)
+
+
+## Capstone
+
+- Create a detailed plan, including UI mocks and technical specifications, for building app
+- Take the skills that I've learned across your Nanodegree journey and apply it to an app idea
+
+**Project**: [Habito](https://github.com/vanyaland/Habito)
+
+Simple habit tracker with Firebase Services and detailed charts.
+
+**Toy apps**:
+
+- [FriendlyChat](../master/FriendlyChat) a Firebase demo project
+
 
 ## Developing Android Apps, Stage 1
 ListViews, Activities, Intents, Content Providers
@@ -48,9 +64,9 @@ Background Tasks, Responsive Layout
 - Understand the phases of the Android application lifecycle
 - Learn how to persist data between orientation and other changes
 - Allow users to customize some aspects of your app using Preferences
-- Implement a SQLite database and make queries to and modify that database in app
+- Implement an SQLite database and make queries to and modify that database in app
 - Learn how Content Providers provide an interface to share data and consume data from an already existing ContentProvider
-- Learn how to efficently implement Background Tasks
+- Learn how to efficiently implement Background Tasks
 
 **Project**: [Popular Movies](https://github.com/vanyaland/Popular-Movies)
 
@@ -108,12 +124,12 @@ Android Design Fundamentals, Surfaces, Bold Graphic Design, Motion, Adaptive Des
 
 - Learn how to apply the material design principles
 - Android design fundamentals
-- Transform design elements of sample apps to mmet Android design consepts
-- Understand of how to create and use material design elements, surfaces, transitions and graphics in apps, across multiple form factors
+- Transform design elements of sample apps to meet Android design concepts
+- Understand how to create and use material design elements, surfaces, transitions and graphics in apps, across multiple form factors
 
 **Project** [XYZReader](https://github.com/vanyaland/XYZReader)
 
-Implement Android design concepts and transform a functional newsreader app using material design techniques.
+Implement Android design concepts and transform a functional news reader app using material design techniques.
 
 ## Android Wear Development
 Android Wear Development, Android TV and Google Cast Development, Android Auto Development
@@ -130,7 +146,7 @@ Let users access the weather at a glance by building a Sunshine watch face for A
 **Toy apps**:
 
 - [AndroidWearFirstProject](../master/AndroidWearFirstProject) is a Android Wear 'Hello World' project
-- [WearCounter](../master/WearCounter) example of sending and syncing data accross wear and mobile apps
+- [WearCounter](../master/WearCounter) example of sending and syncing data across wear and mobile apps
 - [GridViewPager](../master/GridViewPager) GridViewPager sample project
 - [SynchronizedNotifications](../master/SynchronizedNotifications) notifications across Android Wear and phone app
 - [WatchFace](../master/WatchFace) demonstrate how to build watch faces for the Android Wear
@@ -138,6 +154,6 @@ Let users access the weather at a glance by building a Sunshine watch face for A
 - [ControllerSample](../master/ControllerSample) Android TV asteroids game
 - [AutoMessaging](../master/AutoMessaging) Android Auto Messaging demo project
 - [MessagingService](../master/MessagingService) MessagingService demo project
-- [MinimalAutoMedia](../master/MinimalAutoMedia) a very complete sample of the Android Auto media player
+- [MinimalAutoMedia](../master/MinimalAutoMedia) a complete sample of the Android Auto media player
 - [UniversalMusicPlayer](../master/UniversalMusicPlayer) an audio media app that works across multiple form factors and provide a consistent user experience on Android phones, tablets, Android Auto, Android Wear, Android TV and Android Cast devices
-- [MyWatchFace](../master/MyWatchFace) a digital watch face for Android wear powered smartwatch, also control the background colour and the time and date colours of watchface from inside the Android Wear application on mobile device
+- [MyWatchFace](../master/MyWatchFace) a digital watch face for Android wear powered smartwatch, also control the background color and the time and date colors of watchfacec from inside the Android Wear application on mobile device
