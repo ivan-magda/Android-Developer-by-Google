@@ -25,6 +25,8 @@ The skills you learn in this Nanodegree program will help you master the existin
 - Create a detailed plan, including UI mocks and technical specifications, for building app
 - Take the skills that I've learned across your Nanodegree journey and apply it to an app idea
 
+**Certificate**: [Verified Certificate of Completion](https://www.dropbox.com/s/wdh752fdlaoy2y2/android-developer-nd-grad-cert.pdf?dl=0)
+
 **Project**: [Habito](https://github.com/vanyaland/Habito)
 
 Simple habit tracker with Firebase Services and detailed charts.
