@@ -1,4 +1,6 @@
 # Android Developer Nanodegree by Google
+[![codebeat badge](https://codebeat.co/badges/013be486-8ca2-48da-a3ae-da79a350eda1)](https://codebeat.co/projects/github-com-vanyaland-android-developer-by-google-master)
+
 Become an Android Developer.
 
 This is a repository where I will be posting the apps that I built during my [Nanodegree program](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801) study.
